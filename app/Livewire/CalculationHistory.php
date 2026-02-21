@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Calculation;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class CalculationHistory extends Component
@@ -10,6 +11,9 @@ class CalculationHistory extends Component
     public bool   $showDeleteModal = false;
     public ?int   $deleteId        = null;
     public string $deleteMessage   = '';
+
+    #[On('calculation-saved')]
+    public function refresh(): void {}
 
     public function view(int $id): void
     {
