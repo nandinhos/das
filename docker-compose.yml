@@ -1,0 +1,28 @@
+services:
+  das:
+    build: .
+    container_name: calculadora-das
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      APP_NAME: "Calculadora DAS"
+      APP_ENV: production
+      APP_KEY: "base64:9HqVGgKVWw0yoV1WtwsPsHqgK4qoAYxUFhEhCbj204o="
+      APP_DEBUG: "false"
+      APP_URL: "http://localhost:8080"
+      DB_CONNECTION: sqlite
+      # SQLite dentro do volume storage para que migrations do código
+      # (em database/migrations/) sejam sempre lidas da imagem atualizada
+      DB_DATABASE: "/var/www/html/storage/app/database.sqlite"
+      SESSION_DRIVER: database
+      SESSION_LIFETIME: "120"
+      CACHE_STORE: database
+      LOG_CHANNEL: stderr
+      LOG_LEVEL: error
+    volumes:
+      - das_storage:/var/www/html/storage
+
+volumes:
+  das_storage:
+    driver: local

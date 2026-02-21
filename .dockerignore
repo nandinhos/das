@@ -1,0 +1,53 @@
+# Dependências (instaladas no build)
+node_modules/
+vendor/
+
+# Build local (copiado do stage assets)
+public/build/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Assets de origem (já copiados por path específico no Dockerfile)
+# não excluir resources/ porque são copiados pelo COPY . .
+
+# Ambiente local (não deve ir para a imagem)
+.env
+.env.*
+!.env.example
+
+# Banco de dados local
+database/database.sqlite
+
+# Storage local
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+storage/logs/
+
+# Caches do bootstrap (gerados em runtime pelo entrypoint)
+bootstrap/cache/*.php
+
+# Testes
+tests/
+phpunit.xml
+phpstan.neon
+
+# Documentação
+*.md
+LICENSE
+
+# Docker (já referenciados diretamente no Dockerfile)
+Dockerfile
+docker-compose.yml
+
+# Arquivos legados (versão estática anterior ao Laravel)
+index.html
+nginx.conf
+
+# IDE
+.vscode/
+.idea/
+*.swp
