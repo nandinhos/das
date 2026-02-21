@@ -2,9 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\Revenue;
 use App\Models\Calculation;
+use App\Models\Revenue;
 use App\Services\DasCalculatorService;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class DasCalculator extends Component
@@ -49,6 +50,48 @@ class DasCalculator extends Component
         } catch (\RuntimeException $e) {
             $this->errorMessage = $e->getMessage();
         }
+    }
+
+    /** Carrega um cálculo salvo quando o usuário clica em "Ver" no histórico */
+    #[On('view-calculation')]
+    public function loadFromHistory(int $month, int $year): void
+    {
+        $calc = Calculation::where('month', $month)->where('year', $year)->first();
+
+        if (! $calc) {
+            return;
+        }
+
+        $this->month = $calc->month;
+        $this->year  = $calc->year;
+        $this->errorMessage     = '';
+        $this->calculationSaved = true;
+
+        $this->result = [
+            'month'            => $calc->month,
+            'year'             => $calc->year,
+            'rpa'              => (float) $calc->rpa,
+            'rbt12'            => (float) $calc->rbt12,
+            'rbt12_data'       => $calc->rbt12_data,
+            'tax_bracket'      => (int)   $calc->tax_bracket,
+            'aliquota_nominal' => (float) $calc->aliquota_nominal,
+            'parcela_deduzir'  => (float) $calc->parcela_deduzir,
+            'aliquota_efetiva' => (float) $calc->aliquota_efetiva,
+            'valor_total_das'  => (float) $calc->valor_total_das,
+            'special_case'     => (bool)  $calc->special_case,
+            'irpj_percent'     => (float) $calc->irpj_percent,
+            'irpj_value'       => (float) $calc->irpj_value,
+            'csll_percent'     => (float) $calc->csll_percent,
+            'csll_value'       => (float) $calc->csll_value,
+            'cofins_percent'   => (float) $calc->cofins_percent,
+            'cofins_value'     => (float) $calc->cofins_value,
+            'pis_percent'      => (float) $calc->pis_percent,
+            'pis_value'        => (float) $calc->pis_value,
+            'cpp_percent'      => (float) $calc->cpp_percent,
+            'cpp_value'        => (float) $calc->cpp_value,
+            'iss_percent'      => (float) $calc->iss_percent,
+            'iss_value'        => (float) $calc->iss_value,
+        ];
     }
 
     public function saveToHistory(): void
