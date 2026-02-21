@@ -258,19 +258,13 @@
                 </table>
             </div>
 
-            <div class="mt-4 flex justify-end items-center gap-4">
-                @if($calculationSaved)
-                    <span class="text-sm text-green-600 dark:text-green-400 font-medium">
-                        ✓ Salvo no histórico
-                    </span>
-                @endif
-                <button wire:click="saveToHistory"
-                        wire:loading.attr="disabled"
-                        class="px-4 py-2 bg-coral-500 hover:bg-coral-600 disabled:opacity-60 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coral-500 transition-colors">
-                    <span wire:loading.remove wire:target="saveToHistory">Salvar no Histórico</span>
-                    <span wire:loading wire:target="saveToHistory">Salvando...</span>
-                </button>
+            @if($calculationSaved)
+            <div class="mt-4 flex justify-end">
+                <span class="text-sm text-green-600 dark:text-green-400 font-medium">
+                    ✓ Salvo no histórico
+                </span>
             </div>
+            @endif
         </div>
     </div>
     @endif

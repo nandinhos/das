@@ -49,7 +49,20 @@ class DasCalculator extends Component
             );
         } catch (\RuntimeException $e) {
             $this->errorMessage = $e->getMessage();
+            return;
         }
+
+        Calculation::updateOrCreate(
+            ['month' => $this->result['month'], 'year' => $this->result['year']],
+            $this->result
+        );
+
+        $this->calculationSaved = true;
+        $this->dispatch('calculation-saved');
+        $this->dispatch('flash-message',
+            message: "Cálculo de {$this->monthName($this->result['month'])}/{$this->result['year']} salvo no histórico!",
+            type: 'success'
+        );
     }
 
     /** Carrega um cálculo salvo quando o usuário clica em "Ver" no histórico */
@@ -92,24 +105,6 @@ class DasCalculator extends Component
             'iss_percent'      => (float) $calc->iss_percent,
             'iss_value'        => (float) $calc->iss_value,
         ];
-    }
-
-    public function saveToHistory(): void
-    {
-        if (! $this->result) {
-            return;
-        }
-
-        Calculation::updateOrCreate(
-            ['month' => $this->result['month'], 'year' => $this->result['year']],
-            $this->result
-        );
-
-        $this->calculationSaved = true;
-        $this->dispatch('flash-message',
-            message: "Cálculo de {$this->monthName($this->result['month'])}/{$this->result['year']} salvo no histórico!",
-            type: 'success'
-        );
     }
 
     private function monthName(int $month): string
