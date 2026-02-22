@@ -132,13 +132,13 @@
     </x-das.section>
 
     @if($checkResult)
-        <div x-data="{ open: true }" x-show="open" x-transition.opacity class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div x-data="{ open: true }" x-show="open" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div x-show="open" x-transition.opacity class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="open = false"></div>
+                <div x-show="open" @click="open = false" style="display: none;" class="fixed inset-0 bg-gray-500 bg-opacity-75"></div>
 
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div x-show="open" x-transition.enter="ease-out duration-300" x-transition.enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition.enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition.leave="ease-in duration-200" x-transition.leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition.leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div x-show="open" style="display: none;" class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                     <div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
