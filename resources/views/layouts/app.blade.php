@@ -2,105 +2,195 @@
 <html lang="pt-BR"
       x-data="appLayout()"
       :class="{ 'dark': darkMode }"
-      class="h-full">
+      class="h-full scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CORAL 360 LTDA - Calculadora DAS (Anexo III)</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>[x-cloak] { display: none !important; }</style>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-heading { font-family: 'Instrument Sans', sans-serif; }
+        
+        /* Dark mode fallback */
+        html.dark { color-scheme: dark; }
+    </style>
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+<body class="min-h-screen bg-slate-50 dark:bg-[#0a0a0a] text-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-indigo-500 selection:text-white"
+      @scroll.window="scrolled = (window.pageYOffset > 10)">
 
-    <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Background Elements for Premium Feel -->
+    <div class="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-slate-50 to-slate-50 dark:from-indigo-900/10 dark:via-[#0a0a0a] dark:to-[#0a0a0a]"></div>
+    <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-b from-indigo-50/50 dark:from-indigo-950/20 to-transparent -z-10"></div>
 
-        {{-- Header --}}
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                    Calculadora DAS - Anexo III
-                </h1>
-                <h2 class="text-lg text-gray-600 dark:text-gray-400">
-                    CORAL 360 LTDA &mdash; CNPJ 52.507.002/0001-75
-                </h2>
+    <!-- Glassmorphism Header -->
+    <header class="sticky top-0 z-40 w-full transition-all duration-300"
+            :class="scrolled ? 'bg-white/70 dark:bg-[#161615]/70 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-[#3E3E3A]' : 'bg-transparent border-b border-transparent'">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center py-4 gap-4">
+                
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-coral-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold font-heading text-xl">
+                        C
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold font-heading text-slate-900 dark:text-white leading-tight">
+                            Calculadora DAS <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400 align-middle ml-1 px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10">Anexo III</span>
+                        </h1>
+                        <h2 class="text-xs font-medium tracking-wide text-slate-500 dark:text-slate-400 mt-0.5 uppercase">
+                            Coral 360 LTDA &bull; CNPJ 52.507.002/0001-75
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Tools & Theme -->
+                <div class="flex items-center gap-2">
+                    {{-- Toggle dark mode --}}
+                    <button @click="toggleDark()"
+                            class="relative p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#3E3E3A] transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-[#161615]"
+                            :title="darkMode ? 'Mudar para Modo Claro' : 'Mudar para Modo Escuro'"
+                            aria-label="Alternar tema">
+                        
+                        <!-- Sun icon -->
+                        <svg x-show="!darkMode" x-transition:enter="transition-transform duration-300" x-transition:enter-start="-rotate-90 scale-50 opacity-0" x-transition:enter-end="rotate-0 scale-100 opacity-100" class="w-5 h-5 absolute inset-0 m-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        
+                        <!-- Moon icon -->
+                        <svg x-show="darkMode" x-cloak x-transition:enter="transition-transform duration-300" x-transition:enter-start="rotate-90 scale-50 opacity-0" x-transition:enter-end="rotate-0 scale-100 opacity-100" class="w-5 h-5 absolute inset-0 m-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+                    <!-- Perfil mock placeholder -->
+                    <div class="w-8 h-8 rounded-full border-2 border-slate-200 dark:border-[#3E3E3A] overflow-hidden ml-2 hidden sm:block">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="User" class="w-full h-full object-cover">
+                    </div>
+                </div>
             </div>
-            {{-- Toggle dark mode --}}
-            <button @click="toggleDark()"
-                    class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    :title="darkMode ? 'Modo claro' : 'Modo escuro'">
-                <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                </svg>
-                <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-                </svg>
-            </button>
-        </header>
+        </div>
+    </header>
 
-        {{-- Tabs Navigation --}}
-        <nav class="flex flex-wrap gap-2 mb-8" aria-label="Abas">
-            @foreach(['revenue' => 'Receitas Mensais', 'calculate' => 'Calcular DAS', 'history' => 'Histórico', 'tables' => 'Tabelas Tributárias'] as $tab => $label)
-            <button @click="activeTab = '{{ $tab }}'"
-                    :class="activeTab === '{{ $tab }}'
-                        ? 'bg-coral-500 text-white shadow-sm'
-                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'"
-                    class="px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap">
-                {{ $label }}
-            </button>
-            @endforeach
-        </nav>
-
-        {{-- Content Pages --}}
-        <div x-show="activeTab === 'revenue'" x-cloak>
-            @livewire('revenue-manager')
-        </div>
-        <div x-show="activeTab === 'calculate'" x-cloak>
-            @livewire('das-calculator')
-        </div>
-        <div x-show="activeTab === 'history'" x-cloak>
-            @livewire('calculation-history')
-        </div>
-        <div x-show="activeTab === 'tables'" x-cloak>
-            @include('pages.tax-tables')
+    <!-- Main Content Container -->
+    <main class="container mx-auto px-4 py-8 max-w-7xl pt-8">
+        
+        {{-- Modern Tabs Navigation --}}
+        <div class="mb-8 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 hide-scrollbar"
+             x-data="{ 
+                tabs: [
+                    { id: 'revenue', label: 'Dashboard Receitas' },
+                    { id: 'calculate', label: 'Calcular DAS' },
+                    { id: 'history', label: 'Histórico' },
+                    { id: 'tables', label: 'Tabelas Tributárias' }
+                ]
+             }">
+            <nav class="flex space-x-2" aria-label="Abas de Navegação">
+                <template x-for="tab in tabs" :key="tab.id">
+                    <button @click="activeTab = tab.id"
+                            class="relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                            :class="activeTab === tab.id 
+                                ? 'text-white' 
+                                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#3E3E3A]'">
+                        
+                        <!-- Active Background Bulb -->
+                        <span x-show="activeTab === tab.id"
+                              x-transition:enter="transition-transform duration-200 ease-out"
+                              x-transition:enter-start="scale-95 opacity-0"
+                              x-transition:enter-end="scale-100 opacity-100"
+                              class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 shadow-sm -z-10"></span>
+                        
+                        <span x-text="tab.label" class="relative z-10"></span>
+                    </button>
+                </template>
+            </nav>
         </div>
 
-    </div>
+        {{-- Dynamic View Area (Transparent Container) --}}
+        <div class="min-h-[500px]">
+            <div x-show="activeTab === 'revenue'" x-transition.opacity.duration.300ms x-cloak class="p-0 sm:p-2">
+                @livewire('revenue-manager')
+            </div>
+            
+            <div x-show="activeTab === 'calculate'" x-transition.opacity.duration.300ms x-cloak class="p-0 sm:p-2">
+                @livewire('das-calculator')
+            </div>
+            
+            <div x-show="activeTab === 'history'" x-transition.opacity.duration.300ms x-cloak class="p-0 sm:p-2">
+                @livewire('calculation-history')
+            </div>
+            
+            <div x-show="activeTab === 'tables'" x-transition.opacity.duration.300ms x-cloak class="p-4 sm:p-6">
+                @livewire('tax-tables-manager')
+            </div>
+        </div>
+        
+    </main>
 
-    {{-- Toast global --}}
+    {{-- System Footer --}}
+    <footer class="container mx-auto max-w-7xl px-4 py-8 mt-auto border-t border-slate-200/60 dark:border-[#3E3E3A] flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+        <p>&copy; {{ date('Y') }} Coral 360 LTDA. Todos os direitos reservados.</p>
+        <p class="mt-2 sm:mt-0">TALL Stack Dashboard</p>
+    </footer>
+
+    {{-- macOS Style Global Toast System --}}
     <div x-data="toastManager()"
          @flash-message.window="show($event.detail)"
          x-show="visible"
          x-cloak
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 translate-y-4"
-         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:enter="transition cubic-bezier(0.175, 0.885, 0.32, 1.275) duration-400"
+         x-transition:enter-start="opacity-0 translate-y-12 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
          x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 translate-y-4"
-         :class="type === 'success' ? 'bg-green-500' : 'bg-red-500'"
-         class="fixed bottom-4 right-4 z-50 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg max-w-sm">
-        <span x-text="message"></span>
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-90 translate-y-8"
+         class="fixed bottom-6 right-6 z-50 flex items-center px-5 py-4 rounded-2xl border bg-white/90 dark:bg-[#161615]/95 backdrop-blur-xl shadow-2xl max-w-sm w-full"
+         :class="type === 'success' ? 'border-emerald-100 dark:border-emerald-900/50' : 'border-rose-100 dark:border-rose-900/50'">
+        
+        <!-- Icon logic -->
+        <div class="flex-shrink-0 mr-3">
+            <!-- Success SVG -->
+            <svg x-show="type === 'success'" class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <!-- Error SVG -->
+            <svg x-show="type === 'error'" class="w-6 h-6 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+
+        <div class="flex-1">
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100" x-text="type === 'success' ? 'Sucesso' : 'Atenção'"></h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-0.5" x-text="message"></p>
+        </div>
+
+        <button @click="visible = false" class="ml-4 flex-shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
     </div>
 
+    <!-- Core App Scripting -->
     <script>
     function appLayout() {
         return {
             activeTab: 'revenue',
-            darkMode: localStorage.getItem('das_dark_mode') === 'true'
-                   || (localStorage.getItem('das_dark_mode') === null
+            scrolled: false,
+            darkMode: localStorage.getItem('das_dark_mode') === 'true' 
+                   || (localStorage.getItem('das_dark_mode') === null 
                        && window.matchMedia('(prefers-color-scheme: dark)').matches),
 
             toggleDark() {
                 this.darkMode = !this.darkMode;
                 localStorage.setItem('das_dark_mode', this.darkMode);
+                document.documentElement.classList.toggle('dark', this.darkMode);
             },
 
             init() {
-                // Quando o componente de histórico emite "ver cálculo", vai para aba calcular
+                document.documentElement.classList.toggle('dark', this.darkMode);
                 window.addEventListener('view-calculation', () => {
                     this.activeTab = 'calculate';
                 });
@@ -116,11 +206,26 @@
             _timer: null,
 
             show(detail) {
-                this.message = detail.message ?? detail;
-                this.type    = detail.type ?? 'success';
+                // Livewire 3 / Alpine Events podem embrulhar arrays multiplamente
+                let extractData = function(obj) {
+                    if (typeof obj === 'string') return { message: obj, type: 'success' };
+                    if (Array.isArray(obj) && obj.length > 0) return extractData(obj[0]);
+                    if (typeof obj === 'object' && obj !== null) return obj;
+                    return { message: 'Ação realizada', type: 'success' };
+                };
+                
+                let data = extractData(detail);
+                
+                this.message = data.message || 'Atualizado com sucesso!';
+                this.type    = data.type || 'success';
                 this.visible = true;
+                
+                // Animação de entrada macOS Style
+                const el = this.$el;
+                el.classList.remove('animate-pulse');
+                
                 clearTimeout(this._timer);
-                this._timer = setTimeout(() => { this.visible = false; }, 3500);
+                this._timer = setTimeout(() => { this.visible = false; }, 4000);
             }
         }
     }

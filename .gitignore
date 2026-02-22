@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# AI Dev State (dynamic session data)
+.aidev/state/
+.env

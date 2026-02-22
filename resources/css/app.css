@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -9,7 +11,6 @@
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-    /* Cor primária da Coral 360 */
     --color-coral-50:  #f5f5ff;
     --color-coral-100: #ededff;
     --color-coral-200: #d1d1fe;
@@ -20,10 +21,23 @@
     --color-coral-700: #3c3ba5;
     --color-coral-800: #312f83;
     --color-coral-900: #28276b;
+    
+    --color-das-bg: #ffffff;
+    --color-das-bg-secondary: #f8fafc;
+    --color-das-text: #0f172a;
+    --color-das-text-secondary: #475569;
+    --color-das-border: #e2e8f0;
+}
+
+.dark {
+    --color-das-bg: #161615;
+    --color-das-bg-secondary: #0a0a0a;
+    --color-das-text: #f8fafc;
+    --color-das-text-secondary: #94a3b8;
+    --color-das-border: #3E3E3A;
 }
 
 @layer components {
-    /* Contador visual dos passos do cálculo DAS */
     .steps-container {
         counter-reset: step;
     }
@@ -50,7 +64,6 @@
         font-size: 0.875rem;
     }
 
-    /* Input de moeda */
     .input-currency {
         padding-left: 2rem;
     }
@@ -60,7 +73,25 @@
         left: 0.75rem;
         top: 50%;
         transform: translateY(-50%);
-        color: var(--color-gray-500, #6b7280);
+        color: var(--color-slate-500);
         pointer-events: none;
+    }
+    
+    /* Card base */
+    .das-card {
+        background-color: var(--color-das-bg);
+        border-color: var(--color-das-border);
+    }
+    
+    .das-card-secondary {
+        background-color: var(--color-das-bg-secondary);
+    }
+    
+    .das-text {
+        color: var(--color-das-text);
+    }
+    
+    .das-text-secondary {
+        color: var(--color-das-text-secondary);
     }
 }

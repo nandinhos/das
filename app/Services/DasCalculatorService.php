@@ -2,35 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\TaxBracket;
 use Illuminate\Support\Collection;
 
 class DasCalculatorService
 {
-    /**
-     * Tabela do Anexo III — Alíquotas Nominais e Parcela a Deduzir
-     * Fonte: Lei Complementar nº 155/2016
-     */
-    private const ALIQUOTA_TABLE = [
-        ['faixa' => 1, 'min' => 0,          'max' => 180000,    'nominal' => 0.06,  'deducao' => 0],
-        ['faixa' => 2, 'min' => 180000.01,  'max' => 360000,    'nominal' => 0.112, 'deducao' => 9360],
-        ['faixa' => 3, 'min' => 360000.01,  'max' => 720000,    'nominal' => 0.135, 'deducao' => 17640],
-        ['faixa' => 4, 'min' => 720000.01,  'max' => 1800000,   'nominal' => 0.16,  'deducao' => 35640],
-        ['faixa' => 5, 'min' => 1800000.01, 'max' => 3600000,   'nominal' => 0.21,  'deducao' => 125640],
-        ['faixa' => 6, 'min' => 3600000.01, 'max' => 4800000,   'nominal' => 0.33,  'deducao' => 648000],
-    ];
-
-    /**
-     * Tabela do Anexo III — Percentual de Repartição dos Tributos por Faixa
-     */
-    private const TRIBUTOS_TABLE = [
-        1 => ['irpj' => 0.04,  'csll' => 0.035, 'cofins' => 0.1282, 'pis' => 0.0278, 'cpp' => 0.434,  'iss' => 0.335],
-        2 => ['irpj' => 0.04,  'csll' => 0.035, 'cofins' => 0.1405, 'pis' => 0.0305, 'cpp' => 0.434,  'iss' => 0.32],
-        3 => ['irpj' => 0.04,  'csll' => 0.035, 'cofins' => 0.1364, 'pis' => 0.0296, 'cpp' => 0.434,  'iss' => 0.325],
-        4 => ['irpj' => 0.04,  'csll' => 0.035, 'cofins' => 0.141,  'pis' => 0.0305, 'cpp' => 0.434,  'iss' => 0.3195],
-        5 => ['irpj' => 0.04,  'csll' => 0.035, 'cofins' => 0.1442, 'pis' => 0.0313, 'cpp' => 0.434,  'iss' => 0.3155],
-        6 => ['irpj' => 0.35,  'csll' => 0.15,  'cofins' => 0.1603, 'pis' => 0.0347, 'cpp' => 0.305,  'iss' => 0],
-    ];
-
     /**
      * Calcula o RBT12: soma das receitas dos 12 meses anteriores ao PA.
      * Não inclui o mês atual (conforme legislação).
@@ -87,7 +63,7 @@ class DasCalculatorService
      */
     public function identificarFaixa(float $rbt12): ?array
     {
-        foreach (self::ALIQUOTA_TABLE as $faixa) {
+        foreach (self::getAliquotaTable() as $faixa) {
             if ($rbt12 <= $faixa['max']) {
                 return $faixa;
             }
@@ -145,7 +121,7 @@ class DasCalculatorService
 
         $valorTotalDas = $rpa * $aliquotaEfetiva;
 
-        $tributos = self::TRIBUTOS_TABLE[$faixa['faixa']];
+        $tributos = self::getTributosTable()[$faixa['faixa']];
 
         return [
             'month'            => $month,
@@ -175,14 +151,34 @@ class DasCalculatorService
         ];
     }
 
-    /** Expõe as tabelas para a view de referência tributária */
+    /** 
+     * Expõe as tabelas para a view de referência tributária e cálculo, 
+     * agora buscando os dados do Banco de Dados usando App\Models\TaxBracket.
+     */
     public static function getAliquotaTable(): array
     {
-        return self::ALIQUOTA_TABLE;
+        return TaxBracket::orderBy('faixa')->get()->map(function ($bracket) {
+            return [
+                'faixa' => $bracket->faixa,
+                'min' => (float) $bracket->min_rbt12,
+                'max' => (float) $bracket->max_rbt12,
+                'nominal' => (float) $bracket->aliquota_nominal,
+                'deducao' => (float) $bracket->deducao,
+            ];
+        })->toArray();
     }
 
     public static function getTributosTable(): array
     {
-        return self::TRIBUTOS_TABLE;
+        return TaxBracket::orderBy('faixa')->get()->keyBy('faixa')->map(function ($bracket) {
+            return [
+                'irpj' => (float) $bracket->irpj,
+                'csll' => (float) $bracket->csll,
+                'cofins' => (float) $bracket->cofins,
+                'pis' => (float) $bracket->pis,
+                'cpp' => (float) $bracket->cpp,
+                'iss' => (float) $bracket->iss,
+            ];
+        })->toArray();
     }
 }
