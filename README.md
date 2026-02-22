@@ -1,59 +1,110 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="200" alt="Laravel Logo">
 </p>
 
-## About Laravel
+# Calculadora DAS - Anexo III
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Calculadora web para geração do Documento de Arrecadação do Simples Nacional (DAS) para microempresas e empresas de pequeno porte optantes pelo Simples Nacional, especificamente para o **Anexo III** (prestadores de serviços).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+##Sobre o Projeto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Esta aplicação foi desenvolvida para automatizar o cálculo do DAS (Imposto Simples Nacional) com base na receita bruta acumulada dos últimos 12 meses, utilizando as aliquotas e deduções vigentes conforme a legislação brasileira.
 
-## Learning Laravel
+### Funcionalidades
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Cálculo Automático**: Calcula o valor do DAS com base na receita bruta
+- **Histórico de Cálculos**: Armazena todos os cálculos realizados para consulta
+- **Tabela de Impostos**: Faixas de contribuição conforme Anexo III da LC 123/2006
+- **Modo Dark**: Interface com suporte a tema escuro
+- **Design Responsivo**: Funciona em dispositivos móveis e desktop
+- **Persistência de Dados**: Dados armazenados em SQLite
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Tecnologias
 
-## Laravel Sponsors
+- **Backend**: Laravel 12 + PHP 8.4
+- **Frontend**: Livewire 4 + Alpine.js + Tailwind CSS 4
+- **Database**: SQLite
+- **Container**: Docker (PHP-FPM + Nginx)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Tabela de Impostos - Anexo III
 
-### Premium Partners
+| Faixa | Receita Bruta (12 meses) | Alíquota | Parcela a Deduzir |
+|-------|-------------------------|----------|-------------------|
+| 1 | Até R$ 180.000,00 | 6,00% | R$ 0,00 |
+| 2 | De R$ 180.000,01 a R$ 360.000,00 | 11,20% | R$ 9.360,00 |
+| 3 | De R$ 360.000,01 a R$ 720.000,00 | 13,50% | R$ 17.640,00 |
+| 4 | De R$ 720.000,01 a R$ 1.800.000,00 | 16,00% | R$ 35.640,00 |
+| 5 | De R$ 1.800.000,01 a R$ 3.600.000,00 | 21,00% | R$ 125.640,00 |
+| 6 | De R$ 3.600.000,01 a R$ 4.800.000,00 | 33,00% | R$ 648.000,00 |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+*Valores vigentes conforme legislação atual (LC 123/2006, LC 155/2016 e regulamentações posteriores)*
 
-## Contributing
+## Deploy
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Usando Docker
 
-## Code of Conduct
+```bash
+# Build da imagem
+docker build -t das-app .
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Executar container
+docker run -d --name das-app -p 8080:80 das-app
+```
 
-## Security Vulnerabilities
+A aplicação estará disponível em: `http://localhost:8080`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Variáveis de Ambiente
 
-## License
+```env
+APP_NAME=DAS
+APP_ENV=local
+APP_DEBUG=true
+DB_CONNECTION=sqlite
+DB_DATABASE=/var/www/html/storage/app/database.sqlite
+SESSION_DRIVER=file
+CACHE_STORE=file
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Desenvolvimento
+
+```bash
+# Instalar dependências
+composer install
+npm install
+
+# Configurar ambiente
+cp .env.example .env
+php artisan key:generate
+
+# Criar banco
+touch database/database.sqlite
+php artisan migrate
+php artisan db:seed
+
+# Compilar assets
+npm run build
+
+# Servidor local
+php artisan serve
+```
+
+## Estrutura do Projeto
+
+```
+├── app/
+│   ├── Livewire/          # Componentes Livewire
+│   └── Services/          # Serviços (DasCalculatorService)
+├── database/
+│   ├── migrations/        # Migrações do banco
+│   └── seeders/          # Seeders (TaxBracketSeeder)
+├── resources/
+│   ├── css/              # Estilos Tailwind
+│   ├── js/               # Scripts JavaScript
+│   └── views/            # Views Blade + Livewire
+├── docker/               # Configurações Docker
+└── storage/               # Arquivos e banco de dados
+```
+
+## Licença
+
+MIT License - Copyright (c) 2024 Coral 360 LTDA
