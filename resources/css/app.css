@@ -224,8 +224,14 @@
         background-color: var(--color-das-bg);
         border: 1px solid var(--color-das-border);
         border-radius: 1rem;
-        padding: 1.5rem;
+        padding: 1rem;
         margin-bottom: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .das-section {
+            padding: 1.5rem;
+        }
     }
 
     .das-empty {
@@ -284,4 +290,14 @@
         flex-shrink: 0;
         font-size: 0.875rem;
     }
+
+    .hide-scrollbar {
+        scrollbar-width: none;      /* Firefox */
+        -ms-overflow-style: none;   /* IE/Edge */
+    }
+}
+
+/* responsivo: hide-scrollbar (pseudo-elemento fora do @layer para compatibilidade Tailwind 4) */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
 }

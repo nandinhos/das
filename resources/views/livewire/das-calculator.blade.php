@@ -29,7 +29,7 @@
                 </div>
             @endif
 
-            <div class="flex justify-end">
+            <div class="flex flex-col sm:flex-row justify-end">
                 <x-das.button
                     type="submit"
                     variant="primary"

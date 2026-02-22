@@ -67,41 +67,80 @@
                 description="Comece registrando suas receitas mensais."
             />
         @else
-            <x-das.table-wrapper>
-                <x-das.table>
-                    <thead>
-                        <tr>
-                            <th>Período</th>
-                            <th class="text-right">Receita Bruta (R$)</th>
-                            <th class="text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($revenues as $revenue)
+            {{-- Cards: visível apenas em mobile (< 640px) --}}
+            <div class="sm:hidden space-y-3">
+                @foreach($revenues as $revenue)
+                    <div class="das-card p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium uppercase tracking-wider das-text-muted">Período</p>
+                                <p class="text-sm font-medium mt-0.5 das-text">
+                                    {{ $months[$revenue->month] }}/{{ $revenue->year }}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-medium uppercase tracking-wider das-text-muted">Receita Bruta</p>
+                                <p class="text-sm font-medium mt-0.5 das-text">
+                                    R$ {{ number_format((float) $revenue->amount, 2, ',', '.') }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 mt-3 pt-3 border-t border-slate-100 dark:border-[#2d2d2a]">
+                            <button
+                                wire:click="edit({{ $revenue->id }})"
+                                class="text-sm text-primary-500 hover:text-primary-700 dark:hover:text-primary-300 font-medium touch-target inline-flex items-center justify-center px-2 rounded-lg transition-colors"
+                            >
+                                Editar
+                            </button>
+                            <button
+                                wire:click="confirmDelete({{ $revenue->id }})"
+                                class="text-sm text-red-600 hover:text-red-800 dark:hover:text-red-400 font-medium touch-target inline-flex items-center justify-center px-2 rounded-lg transition-colors"
+                            >
+                                Excluir
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Tabela: visível apenas em sm+ (>= 640px) --}}
+            <div class="hidden sm:block">
+                <x-das.table-wrapper>
+                    <x-das.table>
+                        <thead>
                             <tr>
-                                <td class="font-medium">{{ $months[$revenue->month] }}/{{ $revenue->year }}</td>
-                                <td class="text-right">R$ {{ number_format((float) $revenue->amount, 2, ',', '.') }}</td>
-                                <td class="text-right">
-                                    <div class="flex items-center justify-end gap-3">
-                                        <button
-                                            wire:click="edit({{ $revenue->id }})"
-                                            class="text-sm text-primary-500 hover:text-primary-700 dark:hover:text-primary-300 font-medium touch-target inline-flex items-center justify-center px-2 rounded-lg transition-colors"
-                                        >
-                                            Editar
-                                        </button>
-                                        <button
-                                            wire:click="confirmDelete({{ $revenue->id }})"
-                                            class="text-sm text-red-600 hover:text-red-800 dark:hover:text-red-400 font-medium touch-target inline-flex items-center justify-center px-2 rounded-lg transition-colors"
-                                        >
-                                            Excluir
-                                        </button>
-                                    </div>
-                                </td>
+                                <th>Período</th>
+                                <th class="text-right">Receita Bruta (R$)</th>
+                                <th class="text-right">Ações</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </x-das.table>
-            </x-das.table-wrapper>
+                        </thead>
+                        <tbody>
+                            @foreach($revenues as $revenue)
+                                <tr>
+                                    <td class="font-medium">{{ $months[$revenue->month] }}/{{ $revenue->year }}</td>
+                                    <td class="text-right">R$ {{ number_format((float) $revenue->amount, 2, ',', '.') }}</td>
+                                    <td class="text-right">
+                                        <div class="flex items-center justify-end gap-3">
+                                            <button
+                                                wire:click="edit({{ $revenue->id }})"
+                                                class="text-sm text-primary-500 hover:text-primary-700 dark:hover:text-primary-300 font-medium touch-target inline-flex items-center justify-center px-2 rounded-lg transition-colors"
+                                            >
+                                                Editar
+                                            </button>
+                                            <button
+                                                wire:click="confirmDelete({{ $revenue->id }})"
+                                                class="text-sm text-red-600 hover:text-red-800 dark:hover:text-red-400 font-medium touch-target inline-flex items-center justify-center px-2 rounded-lg transition-colors"
+                                            >
+                                                Excluir
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </x-das.table>
+                </x-das.table-wrapper>
+            </div>
         @endif
     </x-das.section>
 

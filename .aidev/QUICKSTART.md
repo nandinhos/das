@@ -27,6 +27,7 @@
 | "seguranca", "vulnerabilidade" | - | security-guardian |
 | "deploy", "pipeline", "CI/CD" | - | devops |
 | "legado", "entender codigo antigo" | - | legacy-analyzer |
+| "responsivo", "mobile", "tablet", "overflow", "layout quebrado" | systematic-debugging | frontend-responsivo -> qa |
 
 ---
 
@@ -82,6 +83,7 @@ Tipos: `feat` | `fix` | `refactor` | `test` | `docs` | `chore`
 | architect | Design e planejamento |
 | backend | Server-side (TDD) |
 | frontend | Client-side (TDD) |
+| frontend-responsivo | Responsividade estrutural sem alterar estetica |
 | code-reviewer | Qualidade e padroes |
 | qa | Testes e validacao |
 | security-guardian | Seguranca OWASP |

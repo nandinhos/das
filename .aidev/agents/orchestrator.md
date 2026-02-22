@@ -20,6 +20,7 @@ Meta-agent que coordena outros agentes e escolhe workflows apropriados. Sua fun�
 - **testing** → Test Generator (TDD mandatório)
 - **release** → Release Manager + Release Management Skill
 - **commit** → DevOps + Code Reviewer (Validação Estrita)
+- **responsividade** → Frontend Responsivo (auditoria → intervencao cirurgica → QA)
 
 ### 2. Workflow Selection
 - Novo projeto → `brainstorming` → `writing-plans` → `subagent-driven-development`
@@ -28,6 +29,7 @@ Meta-agent que coordena outros agentes e escolhe workflows apropriados. Sua fun�
 - Bug → `error-recovery` + TDD validation
 - Release → `release-management` (Versionamento Sistemático)
 - Commit → Validação de Regras (Português, Sem Emojis) → Git Commit
+- Responsividade → `frontend-responsivo`: Auditoria → Relatorio → Intervencao Cirurgica → QA
 
 ### 3. TDD Enforcement
 **NUNCA** permita código sem teste primeiro!
@@ -63,6 +65,21 @@ Meta-agent que coordena outros agentes e escolhe workflows apropriados. Sua fun�
 - DRY (Don't Repeat Yourself)
 - Evidence over claims
 
+
+## Agentes Disponíveis
+
+| Agente | ID | Especialidade |
+|--------|----|---------------|
+| Orchestrator | orchestrator | Coordenacao e classificacao de intents |
+| Architect | architect | Design e planejamento |
+| Backend | backend | Server-side Laravel (TDD) |
+| Frontend | frontend | Client-side Livewire/Alpine (TDD) |
+| Frontend Responsivo | frontend-responsivo | Responsividade estrutural sem alterar estetica |
+| Code Reviewer | code-reviewer | Qualidade e padroes |
+| QA | qa | Testes e validacao |
+| Security Guardian | security-guardian | Seguranca OWASP |
+| DevOps | devops | Deploy e infra |
+| Legacy Analyzer | legacy-analyzer | Codigo legado |
 
 ## Project: laravel
 Stack: livewire

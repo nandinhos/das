@@ -82,8 +82,8 @@
     <main class="container mx-auto px-4 py-8 max-w-7xl pt-8">
         
         {{-- Modern Tabs Navigation --}}
-        <div class="mb-8 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 hide-scrollbar"
-             x-data="{ 
+        <div class="mb-8"
+             x-data="{
                 tabs: [
                     { id: 'revenue', label: 'Dashboard Receitas' },
                     { id: 'calculate', label: 'Calcular DAS' },
@@ -91,14 +91,14 @@
                     { id: 'tables', label: 'Tabelas Tributárias' }
                 ]
              }">
-            <nav class="flex space-x-2" aria-label="Abas de Navegação">
+            <nav class="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-2" aria-label="Abas de Navegação">
                 <template x-for="tab in tabs" :key="tab.id">
                     <button @click="activeTab = tab.id"
-                            class="relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-primary-500 touch-target"
-                            :class="activeTab === tab.id 
-                                ? 'text-white' 
+                            class="relative px-3 sm:px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 sm:whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-primary-500 touch-target flex items-center justify-center w-full sm:w-auto"
+                            :class="activeTab === tab.id
+                                ? 'text-white'
                                 : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#3E3E3A]'">
-                        
+
                         <!-- Active Background Bulb -->
                         <span x-show="activeTab === tab.id"
                               x-transition:enter="transition-transform duration-200 ease-out"
@@ -106,7 +106,7 @@
                               x-transition:enter-end="scale-100 opacity-100"
                               class="absolute inset-0 rounded-xl shadow-sm -z-10"
                               style="background: linear-gradient(to right, oklch(70.7% 0.165 254.624), #2563eb);"></span>
-                        
+
                         <span x-text="tab.label" class="relative z-10"></span>
                     </button>
                 </template>
@@ -151,7 +151,7 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-90 translate-y-8"
-         class="fixed bottom-6 right-6 z-50 flex items-center px-5 py-4 rounded-2xl border bg-white/90 dark:bg-[#161615]/95 backdrop-blur-xl shadow-2xl max-w-sm w-full"
+         class="fixed bottom-4 inset-x-4 sm:bottom-6 sm:left-auto sm:right-6 sm:w-full z-50 flex items-center px-5 py-4 rounded-2xl border bg-white/90 dark:bg-[#161615]/95 backdrop-blur-xl shadow-2xl max-w-sm"
          :class="type === 'success' ? 'border-emerald-100 dark:border-emerald-900/50' : 'border-rose-100 dark:border-rose-900/50'">
         
         <!-- Icon logic -->
