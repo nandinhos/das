@@ -6,7 +6,11 @@
 
 ## 🎯 Ideias em Backlog
 
-*Nenhuma ideia no backlog no momento.*
+### 1. Verificação de Tabelas Tributárias
+- **Descrição**: Sistema de verificação automática das tabelas tributárias do Simples Nacional (Anexo III) comparando dados locais com legislação vigente (LC 123/2006)
+- **Prioridade**: HIGH
+- **Arquivo**: `tax-brackets-verification.md`
+- **Estimativa**: 160 min (5 tasks)
 
 ---
 
@@ -24,10 +28,10 @@ Quando uma ideia for priorizada:
 
 ## 📊 Estatísticas
 
-- **Total de ideias:** 0
-- **Prontas para priorização:** 0
+- **Total de ideias:** 1
+- **Prontas para priorização:** 1
 - **Em análise:** 0
 
 ---
 
-*Última atualização: *
+*Última atualização: 2026-02-22*
