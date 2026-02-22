@@ -11,43 +11,264 @@
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-    --color-coral-50:  #f5f5ff;
-    --color-coral-100: #ededff;
-    --color-coral-200: #d1d1fe;
-    --color-coral-300: #a9a9fc;
-    --color-coral-400: #7c7cf8;
-    --color-coral-500: #5D5CDE;
-    --color-coral-600: #4645c6;
-    --color-coral-700: #3c3ba5;
-    --color-coral-800: #312f83;
-    --color-coral-900: #28276b;
-    
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: oklch(70.7% 0.165 254.624);
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+
     --color-das-bg: #ffffff;
     --color-das-bg-secondary: #f8fafc;
+    --color-das-bg-tertiary: #f1f5f9;
     --color-das-text: #0f172a;
     --color-das-text-secondary: #475569;
+    --color-das-text-muted: #94a3b8;
     --color-das-border: #e2e8f0;
+    --color-das-border-light: #f1f5f9;
 }
 
 .dark {
     --color-das-bg: #161615;
-    --color-das-bg-secondary: #0a0a0a;
+    --color-das-bg-secondary: #1c1c1a;
+    --color-das-bg-tertiary: #262625;
     --color-das-text: #f8fafc;
-    --color-das-text-secondary: #94a3b8;
+    --color-das-text-secondary: #cbd5e1;
+    --color-das-text-muted: #64748b;
     --color-das-border: #3E3E3A;
+    --color-das-border-light: #2d2d2a;
 }
 
 @layer components {
-    .steps-container {
+    .das-card {
+        background-color: var(--color-das-bg);
+        border-color: var(--color-das-border);
+        border-radius: 1rem;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .das-card-hover:hover {
+        background-color: var(--color-das-bg-secondary);
+    }
+
+    .das-input {
+        background-color: var(--color-das-bg);
+        border-color: var(--color-das-border);
+        color: var(--color-das-text);
+        border-radius: 0.75rem;
+        padding: 0.625rem 0.875rem;
+        transition: all 0.2s ease;
+    }
+
+    .das-input:focus {
+        outline: none;
+        border-color: var(--color-primary-500);
+        box-shadow: 0 0 0 3px oklch(70.7% 0.165 254.624 / 0.2);
+    }
+
+    .das-input::placeholder {
+        color: var(--color-das-text-muted);
+    }
+
+    .das-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.625rem 1.25rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        border-radius: 0.75rem;
+        transition: all 0.2s ease;
+        min-height: 44px;
+        min-width: 44px;
+        cursor: pointer;
+    }
+
+    .das-btn-primary {
+        background-color: var(--color-primary-500);
+        color: white;
+    }
+
+    .das-btn-primary:hover {
+        background-color: var(--color-primary-600);
+    }
+
+    .das-btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .das-btn-secondary {
+        background-color: var(--color-das-bg);
+        border: 1px solid var(--color-das-border);
+        color: var(--color-das-text-secondary);
+    }
+
+    .das-btn-secondary:hover {
+        background-color: var(--color-das-bg-secondary);
+        border-color: var(--color-das-text-muted);
+    }
+
+    .das-btn-danger {
+        background-color: #dc2626;
+        color: white;
+    }
+
+    .das-btn-danger:hover {
+        background-color: #b91c1c;
+    }
+
+    .das-btn-ghost {
+        background-color: transparent;
+        color: var(--color-das-text-secondary);
+    }
+
+    .das-btn-ghost:hover {
+        background-color: var(--color-das-bg-secondary);
+    }
+
+    .das-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.625rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+    }
+
+    .das-badge-primary {
+        background-color: var(--color-primary-100);
+        color: var(--color-primary-700);
+    }
+
+    .dark .das-badge-primary {
+        background-color: oklch(70.7% 0.165 254.624 / 0.2);
+        color: var(--color-primary-300);
+    }
+
+    .das-badge-success {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .dark .das-badge-success {
+        background-color: #166534 / 0.3;
+        color: #86efac;
+    }
+
+    .das-badge-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .dark .das-badge-warning {
+        background-color: #92400e / 0.3;
+        color: #fcd34d;
+    }
+
+    .das-badge-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .dark .das-badge-danger {
+        background-color: #991b1b / 0.3;
+        color: #fca5a5;
+    }
+
+    .das-table-wrapper {
+        overflow-x: auto;
+        border-radius: 0.75rem;
+        border: 1px solid var(--color-das-border);
+    }
+
+    .das-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .das-table thead {
+        background-color: var(--color-das-bg-secondary);
+    }
+
+    .dark .das-table thead {
+        background-color: var(--color-das-bg-tertiary);
+    }
+
+    .das-table th {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-das-text-muted);
+    }
+
+    .das-table td {
+        padding: 0.875rem 1rem;
+        font-size: 0.875rem;
+        color: var(--color-das-text);
+        border-top: 1px solid var(--color-das-border-light);
+    }
+
+    .das-table tbody tr:hover {
+        background-color: var(--color-das-bg-secondary);
+    }
+
+    .das-section {
+        background-color: var(--color-das-bg);
+        border: 1px solid var(--color-das-border);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .das-empty {
+        text-align: center;
+        padding: 3rem 1.5rem;
+        color: var(--color-das-text-muted);
+    }
+
+    .das-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgb(0 0 0 / 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+    }
+
+    .das-modal {
+        background-color: var(--color-das-bg);
+        border: 1px solid var(--color-das-border);
+        border-radius: 1rem;
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        max-width: 28rem;
+        width: 100%;
+        margin: 1rem;
+    }
+
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .das-steps {
         counter-reset: step;
     }
 
-    .step {
+    .das-step {
         display: flex;
         align-items: flex-start;
     }
 
-    .step::before {
+    .das-step::before {
         counter-increment: step;
         content: counter(step);
         display: flex;
@@ -56,42 +277,11 @@
         min-width: 2rem;
         height: 2rem;
         border-radius: 9999px;
-        background-color: var(--color-coral-500);
+        background-color: var(--color-primary-500);
         color: white;
         font-weight: bold;
         margin-right: 0.75rem;
         flex-shrink: 0;
         font-size: 0.875rem;
-    }
-
-    .input-currency {
-        padding-left: 2rem;
-    }
-
-    .currency-symbol {
-        position: absolute;
-        left: 0.75rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--color-slate-500);
-        pointer-events: none;
-    }
-    
-    /* Card base */
-    .das-card {
-        background-color: var(--color-das-bg);
-        border-color: var(--color-das-border);
-    }
-    
-    .das-card-secondary {
-        background-color: var(--color-das-bg-secondary);
-    }
-    
-    .das-text {
-        color: var(--color-das-text);
-    }
-    
-    .das-text-secondary {
-        color: var(--color-das-text-secondary);
     }
 }

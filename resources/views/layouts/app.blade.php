@@ -13,9 +13,6 @@
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
     <style>
         [x-cloak] { display: none !important; }
         body { font-family: 'Inter', sans-serif; }
@@ -25,12 +22,12 @@
         html.dark { color-scheme: dark; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 dark:bg-[#0a0a0a] text-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-indigo-500 selection:text-white"
+<body class="min-h-screen bg-slate-50 dark:bg-[#0a0a0a] text-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-primary-500 selection:text-white"
       @scroll.window="scrolled = (window.pageYOffset > 10)">
 
     <!-- Background Elements for Premium Feel -->
-    <div class="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-slate-50 to-slate-50 dark:from-indigo-900/10 dark:via-[#0a0a0a] dark:to-[#0a0a0a]"></div>
-    <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-b from-indigo-50/50 dark:from-indigo-950/20 to-transparent -z-10"></div>
+    <div class="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-slate-50 to-slate-50 dark:from-blue-900/10 dark:via-[#0a0a0a] dark:to-[#0a0a0a]"></div>
+    <div class="fixed top-0 inset-x-0 h-[500px] bg-gradient-to-b from-blue-50/50 dark:from-blue-950/20 to-transparent -z-10"></div>
 
     <!-- Glassmorphism Header -->
     <header class="sticky top-0 z-40 w-full transition-all duration-300"
@@ -40,12 +37,13 @@
                 
                 <!-- Logo & Brand -->
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-coral-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold font-heading text-xl">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-blue-600 flex items-center justify-center text-white font-bold font-heading text-xl"
+                         style="background: linear-gradient(to bottom right, oklch(70.7% 0.165 254.624), #2563eb);">
                         C
                     </div>
                     <div>
                         <h1 class="text-xl font-bold font-heading text-slate-900 dark:text-white leading-tight">
-                            Calculadora DAS <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400 align-middle ml-1 px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10">Anexo III</span>
+                            Calculadora DAS <span class="text-sm font-medium text-primary-600 dark:text-primary-400 align-middle ml-1 px-2 py-0.5 rounded-full bg-blue-50 dark:bg-primary-500/10">Anexo III</span>
                         </h1>
                         <h2 class="text-xs font-medium tracking-wide text-slate-500 dark:text-slate-400 mt-0.5 uppercase">
                             Coral 360 LTDA &bull; CNPJ 52.507.002/0001-75
@@ -57,7 +55,7 @@
                 <div class="flex items-center gap-2">
                     {{-- Toggle dark mode --}}
                     <button @click="toggleDark()"
-                            class="relative p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#3E3E3A] transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-[#161615]"
+                            class="relative p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#3E3E3A] transition-all duration-200 outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-[#161615] touch-target"
                             :title="darkMode ? 'Mudar para Modo Claro' : 'Mudar para Modo Escuro'"
                             aria-label="Alternar tema">
                         
@@ -96,7 +94,7 @@
             <nav class="flex space-x-2" aria-label="Abas de Navegação">
                 <template x-for="tab in tabs" :key="tab.id">
                     <button @click="activeTab = tab.id"
-                            class="relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                            class="relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-primary-500 touch-target"
                             :class="activeTab === tab.id 
                                 ? 'text-white' 
                                 : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#3E3E3A]'">
@@ -106,7 +104,8 @@
                               x-transition:enter="transition-transform duration-200 ease-out"
                               x-transition:enter-start="scale-95 opacity-0"
                               x-transition:enter-end="scale-100 opacity-100"
-                              class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 shadow-sm -z-10"></span>
+                              class="absolute inset-0 rounded-xl shadow-sm -z-10"
+                              style="background: linear-gradient(to right, oklch(70.7% 0.165 254.624), #2563eb);"></span>
                         
                         <span x-text="tab.label" class="relative z-10"></span>
                     </button>
@@ -168,7 +167,7 @@
             <p class="text-sm text-slate-600 dark:text-slate-400 mt-0.5" x-text="message"></p>
         </div>
 
-        <button @click="visible = false" class="ml-4 flex-shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+        <button @click="visible = false" class="ml-4 flex-shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors touch-target flex items-center justify-center rounded-lg">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
     </div>

@@ -15,8 +15,8 @@ public/build/
 
 # Ambiente local (não deve ir para a imagem)
 .env
-.env.*
 !.env.example
+.env.production
 
 # Banco de dados local
 database/database.sqlite
