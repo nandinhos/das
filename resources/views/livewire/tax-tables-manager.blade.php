@@ -132,79 +132,142 @@
     </x-das.section>
 
     @if($checkResult)
-        <div x-data="{ open: true }" x-show="open" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div x-show="open" @click="open = false" style="display: none;" class="fixed inset-0 bg-gray-500 bg-opacity-75"></div>
+        <div class="fixed inset-0 z-50 overflow-y-auto" style="display: flex;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0" style="width: 100%;">
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75" wire:click="closeModal" style="width: 100%; height: 100%;"></div>
 
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div x-show="open" style="display: none;" class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6" style="position: relative; z-index: 60;">
                     <div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
-                                Verificação de Tabelas Tributárias
-                            </h3>
                             
-                            <div class="mt-4">
-                                @if($checkResult['status'] === 'uptodate')
-                                    <div class="flex items-center justify-center p-4 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                                        <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <span class="ml-3 text-green-700 dark:text-green-400 font-medium">Tabela atualizada! Nenhuma diferença encontrada.</span>
-                                    </div>
-                                @elseif($checkResult['status'] === 'outdated')
+                            @if($showConfirm)
+                                <!-- Modal de Confirmação -->
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                                    Confirmar Correção
+                                </h3>
+                                
+                                <div class="mt-4">
                                     <div class="flex items-center justify-center p-4 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg mb-4">
-                                        <svg class="w-12 h-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                                         </svg>
-                                        <span class="ml-3 text-yellow-700 dark:text-yellow-400 font-medium">Diferenças encontradas!</span>
+                                        <span class="ml-3 text-yellow-700 dark:text-yellow-400 font-medium">Atenção! Esta ação alterará os dados.</span>
                                     </div>
-                                    
-                                    <div class="text-left">
-                                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                            Última verificação: {{ \Carbon\Carbon::parse($checkResult['checked_at'])->format('d/m/Y H:i') }}
-                                        </p>
-                                        
-                                        <div class="max-h-60 overflow-y-auto">
-                                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                                <thead class="bg-gray-50 dark:bg-slate-700">
+
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                                        O sistema irá atualizar <strong>{{ count($correctionSummary) }}</strong> campo(s) com os valores oficiais:
+                                    </p>
+
+                                    <div class="max-h-40 overflow-y-auto mb-4">
+                                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                                            <thead class="bg-gray-50 dark:bg-slate-700">
+                                                <tr>
+                                                    <th class="px-2 py-1 text-left text-xs font-medium text-gray-500">Faixa</th>
+                                                    <th class="px-2 py-1 text-left text-xs font-medium text-gray-500">Campo</th>
+                                                    <th class="px-2 py-1 text-right text-xs font-medium text-gray-500">De</th>
+                                                    <th class="px-2 py-1 text-right text-xs font-medium text-gray-500">Para</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                                @foreach($correctionSummary as $item)
                                                     <tr>
-                                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">Faixa</th>
-                                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">Campo</th>
-                                                        <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300">Atual</th>
-                                                        <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300">Oficial</th>
+                                                        <td class="px-2 py-1">{{ $item['faixa'] }}ª</td>
+                                                        <td class="px-2 py-1">{{ $item['field'] }}</td>
+                                                        <td class="px-2 py-1 text-right text-red-500">{{ is_numeric($item['current']) ? number_format($item['current'], 4, ',', '.') : $item['current'] }}</td>
+                                                        <td class="px-2 py-1 text-right text-green-500">{{ is_numeric($item['official']) ? number_format($item['official'], 4, ',', '.') : $item['official'] }}</td>
                                                     </tr>
-                                                </thead>
-                                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                                    @foreach($checkResult['differences'] as $diff)
-                                                        <tr>
-                                                            <td class="px-3 py-2 text-sm text-gray-900 dark:text-white">{{ $diff['faixa'] }}ª</td>
-                                                            <td class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">{{ $diff['field'] }}</td>
-                                                            <td class="px-3 py-2 text-sm text-right text-red-600">{{ is_numeric($diff['current_value']) ? number_format($diff['current_value'], 4, ',', '.') : $diff['current_value'] }}</td>
-                                                            <td class="px-3 py-2 text-sm text-right text-green-600">{{ is_numeric($diff['official_value']) ? number_format($diff['official_value'], 4, ',', '.') : $diff['official_value'] }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-2">
+                                    <button wire:click="confirmCorrection" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:w-auto sm:text-sm">
+                                        Sim, aplicar correções
+                                    </button>
+                                    <button wire:click="cancelConfirm" type="button" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-slate-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none sm:w-auto sm:text-sm">
+                                        Cancelar
+                                    </button>
+                                </div>
+
+                            @else
+                                <!-- Modal de Resultado -->
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                                    Verificação de Tabelas Tributárias
+                                </h3>
+                                
+                                <div class="mt-4">
+                                    @if($checkResult['status'] === 'uptodate')
+                                        <div class="flex items-center justify-center p-4 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                                            <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            <span class="ml-3 text-green-700 dark:text-green-400 font-medium">Tabela atualizada! Nenhuma diferença encontrada.</span>
                                         </div>
-                                    </div>
-                                @else
-                                    <div class="flex items-center justify-center p-4 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                                        <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <span class="ml-3 text-red-700 dark:text-red-400 font-medium">Erro ao verificar tabelas. Tente novamente mais tarde.</span>
-                                    </div>
-                                @endif
-                            </div>
+                                    @elseif($checkResult['status'] === 'outdated')
+                                        <div class="flex items-center justify-center p-4 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg mb-4">
+                                            <svg class="w-12 h-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                            </svg>
+                                            <span class="ml-3 text-yellow-700 dark:text-yellow-400 font-medium">Diferenças encontradas!</span>
+                                        </div>
+                                        
+                                        <div class="text-left">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                                Última verificação: {{ \Carbon\Carbon::parse($checkResult['checked_at'])->format('d/m/Y H:i') }}
+                                            </p>
+                                            
+                                            <div class="max-h-60 overflow-y-auto">
+                                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                                    <thead class="bg-gray-50 dark:bg-slate-700">
+                                                        <tr>
+                                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">Faixa</th>
+                                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">Campo</th>
+                                                            <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300">Atual</th>
+                                                            <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300">Oficial</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                                        @foreach($checkResult['differences'] as $diff)
+                                                            <tr>
+                                                                <td class="px-3 py-2 text-sm text-gray-900 dark:text-white">{{ $diff['faixa'] }}ª</td>
+                                                                <td class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">{{ $diff['field'] }}</td>
+                                                                <td class="px-3 py-2 text-sm text-right text-red-600">{{ is_numeric($diff['current_value']) ? number_format($diff['current_value'], 4, ',', '.') : $diff['current_value'] }}</td>
+                                                                <td class="px-3 py-2 text-sm text-right text-green-600">{{ is_numeric($diff['official_value']) ? number_format($diff['official_value'], 4, ',', '.') : $diff['official_value'] }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center justify-center p-4 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                                            <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            <span class="ml-3 text-red-700 dark:text-red-400 font-medium">Erro ao verificar tabelas. Tente novamente mais tarde.</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
-                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                        <button @click="open = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                            Fechar
-                        </button>
-                    </div>
+                    
+                    @if(!$showConfirm)
+                        <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                            @if($checkResult['status'] === 'outdated')
+                                <button wire:click="prepareCorrection" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                                    Aplicar Correções
+                                </button>
+                            @endif
+                            <button wire:click="closeModal" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                                Fechar
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

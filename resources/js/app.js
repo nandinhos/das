@@ -1,4 +1,7 @@
 import './bootstrap';
+import Alpine from 'alpinejs';
+import collapse from '@alpinejs/collapse';
+import persist from '@alpinejs/persist';
 
 document.addEventListener('livewire:init', () => {
     Alpine.data('currencyInput', () => ({

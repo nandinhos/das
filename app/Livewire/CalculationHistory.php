@@ -8,10 +8,13 @@ use Livewire\Component;
 
 class CalculationHistory extends Component
 {
-    public bool   $showDeleteModal = false;
-    public ?int   $deleteId        = null;
-    public string $deleteMessage   = '';
+    public bool $showDeleteModal = false;
 
+    public ?int $deleteId = null;
+
+    public string $deleteMessage = '';
+
+    #[On('tax-brackets-updated')]
     #[On('calculation-saved')]
     public function refresh(): void {}
 
@@ -24,8 +27,8 @@ class CalculationHistory extends Component
 
     public function confirmDelete(int $id): void
     {
-        $calc                = Calculation::findOrFail($id);
-        $this->deleteId      = $id;
+        $calc = Calculation::findOrFail($id);
+        $this->deleteId = $id;
         $this->deleteMessage = "Tem certeza que deseja excluir o cálculo de {$this->monthName($calc->month)}/{$calc->year}?";
         $this->showDeleteModal = true;
     }
@@ -42,13 +45,13 @@ class CalculationHistory extends Component
             );
         }
         $this->showDeleteModal = false;
-        $this->deleteId        = null;
+        $this->deleteId = null;
     }
 
     public function cancelDelete(): void
     {
         $this->showDeleteModal = false;
-        $this->deleteId        = null;
+        $this->deleteId = null;
     }
 
     private function monthName(int $month): string

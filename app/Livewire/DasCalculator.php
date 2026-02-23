@@ -10,31 +10,47 @@ use Livewire\Component;
 
 class DasCalculator extends Component
 {
-    public int    $month;
-    public int    $year;
+    public int $month;
 
-    public ?array $result           = null;
-    public string $errorMessage     = '';
-    public bool   $calculationSaved = false;
+    public int $year;
+
+    public ?array $result = null;
+
+    public string $errorMessage = '';
+
+    public bool $calculationSaved = false;
+
+    protected $listeners = [
+        'tax-brackets-updated' => 'clearResult',
+    ];
 
     public function mount(): void
     {
         $this->month = (int) now()->format('n');
-        $this->year  = (int) now()->format('Y');
+        $this->year = (int) now()->format('Y');
+    }
+
+    #[On('tax-brackets-updated')]
+    public function clearResult(): void
+    {
+        $this->result = null;
+        $this->calculationSaved = false;
+        $this->errorMessage = '';
     }
 
     public function calculate(DasCalculatorService $service): void
     {
-        $this->errorMessage     = '';
+        $this->errorMessage = '';
         $this->calculationSaved = false;
-        $this->result           = null;
+        $this->result = null;
 
         $revenue = Revenue::where('month', $this->month)
-                          ->where('year', $this->year)
-                          ->first();
+            ->where('year', $this->year)
+            ->first();
 
         if (! $revenue) {
             $this->errorMessage = "Não há receita registrada para {$this->monthName($this->month)}/{$this->year}. Registre a receita primeiro na aba \"Receitas Mensais\".";
+
             return;
         }
 
@@ -49,6 +65,7 @@ class DasCalculator extends Component
             );
         } catch (\RuntimeException $e) {
             $this->errorMessage = $e->getMessage();
+
             return;
         }
 
@@ -76,34 +93,34 @@ class DasCalculator extends Component
         }
 
         $this->month = $calc->month;
-        $this->year  = $calc->year;
-        $this->errorMessage     = '';
+        $this->year = $calc->year;
+        $this->errorMessage = '';
         $this->calculationSaved = true;
 
         $this->result = [
-            'month'            => $calc->month,
-            'year'             => $calc->year,
-            'rpa'              => (float) $calc->rpa,
-            'rbt12'            => (float) $calc->rbt12,
-            'rbt12_data'       => $calc->rbt12_data,
-            'tax_bracket'      => (int)   $calc->tax_bracket,
+            'month' => $calc->month,
+            'year' => $calc->year,
+            'rpa' => (float) $calc->rpa,
+            'rbt12' => (float) $calc->rbt12,
+            'rbt12_data' => $calc->rbt12_data,
+            'tax_bracket' => (int) $calc->tax_bracket,
             'aliquota_nominal' => (float) $calc->aliquota_nominal,
-            'parcela_deduzir'  => (float) $calc->parcela_deduzir,
+            'parcela_deduzir' => (float) $calc->parcela_deduzir,
             'aliquota_efetiva' => (float) $calc->aliquota_efetiva,
-            'valor_total_das'  => (float) $calc->valor_total_das,
-            'special_case'     => (bool)  $calc->special_case,
-            'irpj_percent'     => (float) $calc->irpj_percent,
-            'irpj_value'       => (float) $calc->irpj_value,
-            'csll_percent'     => (float) $calc->csll_percent,
-            'csll_value'       => (float) $calc->csll_value,
-            'cofins_percent'   => (float) $calc->cofins_percent,
-            'cofins_value'     => (float) $calc->cofins_value,
-            'pis_percent'      => (float) $calc->pis_percent,
-            'pis_value'        => (float) $calc->pis_value,
-            'cpp_percent'      => (float) $calc->cpp_percent,
-            'cpp_value'        => (float) $calc->cpp_value,
-            'iss_percent'      => (float) $calc->iss_percent,
-            'iss_value'        => (float) $calc->iss_value,
+            'valor_total_das' => (float) $calc->valor_total_das,
+            'special_case' => (bool) $calc->special_case,
+            'irpj_percent' => (float) $calc->irpj_percent,
+            'irpj_value' => (float) $calc->irpj_value,
+            'csll_percent' => (float) $calc->csll_percent,
+            'csll_value' => (float) $calc->csll_value,
+            'cofins_percent' => (float) $calc->cofins_percent,
+            'cofins_value' => (float) $calc->cofins_value,
+            'pis_percent' => (float) $calc->pis_percent,
+            'pis_value' => (float) $calc->pis_value,
+            'cpp_percent' => (float) $calc->cpp_percent,
+            'cpp_value' => (float) $calc->cpp_value,
+            'iss_percent' => (float) $calc->iss_percent,
+            'iss_value' => (float) $calc->iss_value,
         ];
     }
 
@@ -119,7 +136,7 @@ class DasCalculator extends Component
     public function render()
     {
         return view('livewire.das-calculator', [
-            'years'  => range(now()->year - 2, now()->year + 2),
+            'years' => range(now()->year - 2, now()->year + 2),
             'months' => [
                 1 => 'Janeiro', 2 => 'Fevereiro', 3 => 'Março', 4 => 'Abril',
                 5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto',

@@ -14,6 +14,10 @@ class TaxTablesManager extends Component
 
     public $checking = false;
 
+    public $showConfirm = false;
+
+    public $correctionSummary = [];
+
     public function mount()
     {
         $this->loadBrackets();
@@ -24,11 +28,83 @@ class TaxTablesManager extends Component
         $this->brackets = TaxBracket::orderBy('faixa')->get()->toArray();
     }
 
-    public function checkForUpdates(TaxBracketComparatorService $comparator)
+    public function checkForUpdates()
     {
         $this->checking = true;
+
+        $comparator = app(TaxBracketComparatorService::class);
         $this->checkResult = $comparator->checkForUpdates();
+
         $this->checking = false;
+    }
+
+    public function closeModal()
+    {
+        $this->checkResult = null;
+        $this->showConfirm = false;
+        $this->correctionSummary = [];
+    }
+
+    public function prepareCorrection()
+    {
+        if (empty($this->checkResult['differences'])) {
+            return;
+        }
+
+        $comparator = app(TaxBracketComparatorService::class);
+        $official = $comparator->getOfficialBrackets();
+
+        $summary = [];
+        foreach ($this->checkResult['differences'] as $diff) {
+            if ($diff['field'] === 'missing') {
+                continue;
+            }
+            $summary[] = [
+                'faixa' => $diff['faixa'],
+                'field' => $diff['field'],
+                'current' => $diff['current_value'],
+                'official' => $diff['official_value'],
+            ];
+        }
+
+        $this->correctionSummary = $summary;
+        $this->showConfirm = true;
+    }
+
+    public function confirmCorrection()
+    {
+        $comparator = app(TaxBracketComparatorService::class);
+        $official = $comparator->getOfficialBrackets();
+
+        foreach ($official as $data) {
+            TaxBracket::where('faixa', $data['faixa'])->update([
+                'min_rbt12' => $data['min_rbt12'],
+                'max_rbt12' => $data['max_rbt12'],
+                'aliquota_nominal' => $data['aliquota_nominal'],
+                'deducao' => $data['deducao'],
+                'irpj' => $data['irpj'],
+                'csll' => $data['csll'],
+                'cofins' => $data['cofins'],
+                'pis' => $data['pis'],
+                'cpp' => $data['cpp'],
+                'iss' => $data['iss'],
+            ]);
+        }
+
+        $this->loadBrackets();
+        $this->closeModal();
+        $this->dispatch('tax-brackets-updated');
+
+        $this->dispatch('flash-message', [
+            'type' => 'success',
+            'message' => 'Tabelas atualizadas com valores oficiais!',
+        ]);
+    }
+
+    public function cancelConfirm()
+    {
+        $this->showConfirm = false;
+        $this->correctionSummary = [];
     }
 
     public function updateBracket($index, $field, $value)

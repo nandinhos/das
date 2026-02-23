@@ -176,7 +176,7 @@
     <script>
     function appLayout() {
         return {
-            activeTab: 'revenue',
+            activeTab: Alpine.$persist('revenue').as('das_active_tab'),
             scrolled: false,
             darkMode: localStorage.getItem('das_dark_mode') === 'true' 
                    || (localStorage.getItem('das_dark_mode') === null 
