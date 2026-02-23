@@ -36,7 +36,7 @@
                 </thead>
                 <tbody>
                     @foreach($brackets as $index => $row)
-                        <tr>
+                        <tr wire:key="aliq-row-{{ $row['id'] }}-{{ md5(json_encode($row)) }}">
                             <td class="font-medium">{{ $row['faixa'] }}ª</td>
                             <td class="das-text-secondary">
                                 @if($row['min_rbt12'] == 0)
@@ -45,15 +45,15 @@
                                     De R$ {{ number_format($row['min_rbt12'], 2, ',', '.') }} a R$ {{ number_format($row['max_rbt12'], 2, ',', '.') }}
                                 @endif
                             </td>
-                            
+
                             <td class="text-right relative">
                                 <div x-data="{ editing: false, val: '{{ number_format($row['aliquota_nominal'] * 100, 2, '.', '') }}' }" @click.away="editing = false">
-                                    <span x-show="!editing" 
-                                          @click="editing = true; $nextTick(() => $refs.aliquota_{{ $index }}.focus())" 
+                                    <span x-show="!editing"
+                                          @click="editing = true; $nextTick(() => $refs.aliquota_{{ $index }}.focus())"
                                           class="cursor-pointer border-b border-dashed border-primary-300 dark:border-primary-600 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
                                         <span x-text="Number(val).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></span>%
                                     </span>
-                                    
+
                                     <input x-show="editing" x-ref="aliquota_{{ $index }}" x-model="val" type="text"
                                            @keydown.enter="$wire.updateBracket({{ $index }}, 'aliquota_nominal', val); editing = false"
                                            @keydown.escape="editing = false"
@@ -63,12 +63,12 @@
 
                             <td class="text-right relative">
                                 <div x-data="{ editing: false, val: '{{ number_format($row['deducao'], 2, '.', '') }}' }" @click.away="editing = false">
-                                    <span x-show="!editing" 
-                                          @click="editing = true; $nextTick(() => $refs.deducao_{{ $index }}.focus())" 
+                                    <span x-show="!editing"
+                                          @click="editing = true; $nextTick(() => $refs.deducao_{{ $index }}.focus())"
                                           class="cursor-pointer border-b border-dashed border-red-300 dark:border-red-600 hover:text-red-600 dark:hover:text-red-400 transition-colors">
                                         R$ <span x-text="Number(val).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></span>
                                     </span>
-                                    
+
                                     <input x-show="editing" x-ref="deducao_{{ $index }}" x-model="val" type="text"
                                            @keydown.enter="$wire.updateBracket({{ $index }}, 'deducao', val); editing = false"
                                            @keydown.escape="editing = false"
@@ -102,9 +102,9 @@
                 </thead>
                 <tbody>
                     @foreach($brackets as $index => $row)
-                        <tr>
+                        <tr wire:key="rep-row-{{ $row['id'] }}-{{ md5(json_encode($row)) }}">
                             <td class="font-medium">{{ $row['faixa'] }}ª</td>
-                            
+
                             @foreach(['irpj', 'csll', 'cofins', 'pis', 'cpp', 'iss'] as $tfield)
                                 <td class="text-right relative">
                                     <div x-data="{ editing: false, val: '{{ number_format($row[$tfield] * 100, 2, '.', '') }}' }" @click.away="editing = false">

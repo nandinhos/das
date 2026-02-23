@@ -17,6 +17,12 @@
 - Componentes Blade
 - Deploy & Entrypoint
 
+### Frontend / Reatividade
+**Arquivo**: `2026-02-22-livewire-alpine-morph-conflict.md`
+- Conflito Livewire morph + Alpine x-data
+- wire:key com hash dinâmico
+- Reatividade em loops @foreach
+
 ---
 
 ## Busca por Tema
@@ -31,6 +37,9 @@
 | entrypoint.sh | 2026-02-22-design-system-lessons-learned.md | 5. Deploy & Entrypoint |
 | SESSION_DRIVER | 2026-02-22-design-system-lessons-learned.md | 6. Configurações |
 | Mobile First | 2026-02-22-design-system-lessons-learned.md | 3. Tailwind CSS |
+| Livewire morph + Alpine | 2026-02-22-livewire-alpine-morph-conflict.md | Causa Raiz |
+| wire:key hash | 2026-02-22-livewire-alpine-morph-conflict.md | Solucao |
+| x-data em loops | 2026-02-22-livewire-alpine-morph-conflict.md | Prevencao |
 
 ---
 

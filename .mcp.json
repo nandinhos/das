@@ -14,8 +14,10 @@
     "serena": {
       "command": "uvx",
       "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
         "serena",
-        "--project=."
+        "start-mcp-server"
       ],
       "description": "Serena server for intelligent code navigation"
     },
@@ -26,29 +28,24 @@
         "mcp"
       ],
       "description": "Persistent memory for cross-session knowledge"
+    },
+    "laravel-boost": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "-u",
+        "1000:1000",
+        "-e",
+        "WWWUSER=1000",
+        "-e",
+        "WWWGROUP=1000",
+        "calculadora-das",
+        "php",
+        "artisan",
+        "boost:mcp"
+      ],
+      "description": "Laravel Boost MCP for Laravel best practices and guidance"
     }
-  },
-  "laravel-boost": {
-    "command": "docker",
-    "args": [
-      "exec",
-      "-i",
-      "-u",
-      "1000:1000",
-      "-e",
-      "WWWUSER=1000",
-      "-e",
-      "WWWGROUP=1000",
-      "calculadora-das",
-      "php",
-      "artisan",
-      "boost:mcp"
-    ],
-    "disabledTools": []
-  },
-  "projectConfig": {
-    "name": "laravel",
-    "stack": "livewire",
-    "version": "1.0.0"
   }
 }

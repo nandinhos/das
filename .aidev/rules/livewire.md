@@ -54,6 +54,12 @@ class UserProfile extends Component
 - `wire:model.live` para validação em tempo real
 - Flash messages para feedback
 
+### wire:key em Loops com Alpine
+- `wire:key` obrigatorio em todo `@foreach` que contenha `x-data`
+- Incluir hash dos dados no key quando valores precisam ser reativos: `wire:key="row-{{ $id }}-{{ md5(json_encode($item)) }}"`
+- Usar prefixo unico no key para multiplas tabelas com mesmo dataset
+- Motivo: O morph do Livewire preserva estado Alpine (`x-data`) por design. Sem hash no key, dados nao atualizam visualmente.
+
 ### Events
 - `$this->dispatch()` para emitir eventos
 - `#[On('event-name')]` para ouvir eventos
