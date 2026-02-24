@@ -69,10 +69,24 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                         </svg>
                     </button>
-                    <!-- Perfil mock placeholder -->
-                    <div class="w-8 h-8 rounded-full border-2 border-slate-200 dark:border-[#3E3E3A] overflow-hidden ml-2 hidden sm:block">
-                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="User" class="w-full h-full object-cover">
+                    @auth
+                    <!-- User Profile & Logout -->
+                    <div class="flex items-center gap-3 ml-2 border-l border-slate-200 dark:border-[#3E3E3A] pl-4">
+                        <div class="hidden sm:flex flex-col items-end">
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white leading-none">{{ auth()->user()->name }}</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ auth()->user()->email }}</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-full border-2 border-slate-200 dark:border-[#3E3E3A] overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0 hidden sm:block">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=6366f1&color=fff" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                        </div>
+                        <form method="POST" action="{{ route('logout') }}" class="m-0 p-0 ml-1">
+                            @csrf
+                            <button type="submit" class="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 dark:hover:text-rose-400 rounded-lg transition-colors" title="Sair do Sistema">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            </button>
+                        </form>
                     </div>
+                    @endauth
                 </div>
             </div>
         </div>

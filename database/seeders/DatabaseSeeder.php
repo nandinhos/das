@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        /*
+        //
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Angelica Domingos',
+            'email' => 'angelica.domingos@hotmail.com',
+            'password' => bcrypt('REDACTED'),
         ]);
-        */
 
         $this->call([
             TaxBracketSeeder::class,
