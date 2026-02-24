@@ -15,8 +15,6 @@ Estamos no projeto `das`.
 - **Progresso**: 0%
 - **Tarefa Atual**: `Nenhuma`
 
-> ANTIGRAVITY DETECTADO: Use `read_memory` e `build_context` para detalhes técnicos.
-
 ## Próximos Passos
 1. Continuar tarefa `Nenhuma`.
 
