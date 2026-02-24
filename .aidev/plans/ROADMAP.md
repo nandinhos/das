@@ -18,23 +18,25 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 
 ## 🎯 SPRINTS PLANEJADOS
 
-### 📅 SPRINT 1: [Nome da Sprint]
-**Objetivo:** [Objetivo principal]
-**Status:** 🟡 Não iniciado
+### 📅 SPRINT 1: Autenticação Segura
+**Objetivo:** Implementar controle de acesso inicial ao sistema para proteção da calculadora.
+**Status:** 🟢 Ativa
 
 #### Funcionalidades:
 
-##### 1.1 - [Nome da Feature]
+##### 1.1 - Tela de Login
 **Prioridade:** 🔴 CRÍTICA
-**Status:** 🟡 Não iniciado
+**Status:** 🟢 Em andamento
 
 **Requisitos de Negócio:**
-- [Requisito 1]
-- [Requisito 2]
+- Acesso restrito de uso
+- Interface 100% em Português BR
+- Alinhamento de design (Air Force Blue, Glassmorphismo)
 
 **Requisitos Técnicos:**
-- [ ] [Tarefa 1]
-- [ ] [Tarefa 2]
+- [x] Criar testes unitários e rodar fase Red (TDD)
+- [ ] Construir o componente Livewire de autenticação
+- [ ] Construir a view de autenticação com Laravel/Blade
 
 ---
 
@@ -42,7 +44,7 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 
 | Sprint | Funcionalidade | Prioridade | Status |
 |--------|----------------|------------|--------|
-| 1 | [Feature] | 🔴 CRÍTICA | 🟡 Pendente |
+| 1 | Tela de Login | 🔴 CRÍTICA | 🟢 Em andamento |
 
 ---
 
