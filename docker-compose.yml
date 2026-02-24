@@ -19,8 +19,4 @@ services:
       LOG_CHANNEL: stderr
       LOG_LEVEL: error
     volumes:
-      - das_storage:/var/www/html/storage
-
-volumes:
-  das_storage:
-    driver: local
+      - ./storage:/var/www/html/storage
