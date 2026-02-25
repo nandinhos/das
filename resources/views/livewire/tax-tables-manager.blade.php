@@ -262,7 +262,7 @@
 
                                     {{-- Tabela: desktop --}}
                                     <div class="hidden sm:block max-h-40 overflow-y-auto mb-4 rounded-lg border border-slate-200 dark:border-slate-700">
-                                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                                        <table class="min-w-max w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                                             <thead class="bg-gray-50 dark:bg-slate-700">
                                                 <tr>
                                                     <th class="px-2 py-1.5 text-left text-xs font-medium text-gray-500">Faixa</th>
@@ -342,7 +342,7 @@
 
                                             {{-- Tabela: desktop --}}
                                             <div class="hidden sm:block max-h-60 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700">
-                                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                                <table class="min-w-max w-full divide-y divide-gray-200 dark:divide-gray-700">
                                                     <thead class="bg-gray-50 dark:bg-slate-700">
                                                         <tr>
                                                             <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">Faixa</th>
