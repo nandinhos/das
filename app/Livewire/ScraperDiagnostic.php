@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\TaxBracket;
 use App\Services\TaxBracketComparatorService;
 use App\Services\TaxBracketScraperService;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -22,6 +24,10 @@ class ScraperDiagnostic extends Component
     public array $fallback = [];
     public bool $usedFallback = false;
     public array $comparisonResult = [];
+
+    public bool $correcting = false;
+    public bool $corrected = false;
+    public string $correctionMessage = '';
 
     public function run(): void
     {
@@ -88,6 +94,48 @@ class ScraperDiagnostic extends Component
 
         $this->running = false;
         $this->ran = true;
+        $this->corrected = false;
+        $this->correctionMessage = '';
+    }
+
+    public function applyCorrections(): void
+    {
+        $this->correcting = true;
+        $this->correctionMessage = '';
+
+        // Bloqueia se fonte é fallback
+        if ($this->comparisonResult['source'] === 'fallback') {
+            $this->correctionMessage = 'Correção indisponível: dados de fallback não são confiáveis para atualização.';
+            $this->correcting = false;
+            return;
+        }
+
+        try {
+            $updated = 0;
+            foreach ($this->scraped as $official) {
+                TaxBracket::updateOrCreate(
+                    ['faixa' => $official['faixa']],
+                    collect($official)->except('faixa')->toArray()
+                );
+                $updated++;
+            }
+
+            Log::info('Tabelas tributárias corrigidas via diagnóstico', [
+                'faixas_atualizadas' => $updated,
+                'source' => $this->comparisonResult['source'],
+            ]);
+
+            // Reexecuta comparador para confirmar sincronização
+            $this->comparisonResult = app(TaxBracketComparatorService::class)->checkForUpdates();
+
+            $this->corrected = true;
+            $this->correctionMessage = "{$updated} faixa(s) atualizada(s) com sucesso.";
+        } catch (\Exception $e) {
+            Log::error('Erro ao aplicar correções', ['error' => $e->getMessage()]);
+            $this->correctionMessage = 'Erro ao aplicar correções: ' . $e->getMessage();
+        }
+
+        $this->correcting = false;
     }
 
     public function render()

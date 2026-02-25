@@ -305,6 +305,57 @@
                     <p class="text-xs das-text-muted">Nenhuma diferença encontrada — tabelas locais sincronizadas.</p>
                 @endif
 
+                {{-- Feedback de correção --}}
+                @if($correctionMessage)
+                    <div class="rounded-lg px-4 py-3 text-sm {{ $corrected ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800' }}">
+                        @if($corrected)
+                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        @else
+                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        @endif
+                        {{ $correctionMessage }}
+                    </div>
+                @endif
+
+                {{-- Botão Corrigir Tabelas --}}
+                @if($status === 'outdated' && !$corrected)
+                    <div class="flex items-center gap-3 pt-2">
+                        @if($comparisonResult['source'] !== 'fallback')
+                            <button wire:click="applyCorrections"
+                                    wire:confirm="Tem certeza que deseja atualizar as tabelas locais com os dados oficiais do Planalto? Os novos valores serão usados imediatamente na calculadora."
+                                    wire:loading.attr="disabled"
+                                    wire:target="applyCorrections"
+                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-all duration-200 disabled:opacity-50">
+                                <span wire:loading.remove wire:target="applyCorrections">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                </span>
+                                <svg wire:loading wire:target="applyCorrections" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                </svg>
+                                Corrigir Tabelas
+                            </button>
+                            <span class="text-xs text-slate-500">
+                                Atualiza {{ count($comparisonResult['differences']) }} campo(s) para os valores oficiais
+                            </span>
+                        @else
+                            <button disabled
+                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-400 bg-slate-200 dark:bg-[#2a2a2a] dark:text-slate-500 rounded-lg cursor-not-allowed"
+                                    title="Dados de fallback não são confiáveis para atualização automática">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                                Corrigir Tabelas
+                            </button>
+                            <span class="text-xs text-amber-600 dark:text-amber-400">
+                                Indisponível: dados de fallback não são confiáveis para correção automática
+                            </span>
+                        @endif
+                    </div>
+                @endif
+
                 {{-- JSON expansível com syntax highlighting --}}
                 <div x-data="{ open: false, rendered: '' }"
                      x-init="rendered = window.highlightJson(@js($comparisonResult))">
