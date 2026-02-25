@@ -9,6 +9,12 @@
 - Laravel Sail
 - Configuração de container
 
+**Arquivo**: `2026-02-24-docker-bind-mount-vs-named-volume.md` ⭐
+- Volume nomeado vs Bind Mount para SQLite
+- Migração de volume para bind mount
+- Permissões storage em WSL2
+- `.env` DB_DATABASE: path do container, não do host
+
 ### Design System & Frontend
 **Arquivo**: `2026-02-22-design-system-lessons-learned.md`
 - Docker & Build
@@ -22,6 +28,21 @@
 - Conflito Livewire morph + Alpine x-data
 - wire:key com hash dinâmico
 - Reatividade em loops @foreach
+
+### Arquitetura Tributária / Data Model
+**Arquivo**: `2026-02-24-arquitetura-tributaria-percentual-decimal.md` ⭐
+- Convenção TaxBracket=percentual, Calculation=decimal
+- DasCalculatorService como fonte única de cálculo
+- Bug x100: UPDATE em massa sem backup
+- Epsilon 0.01 para comparação de percentuais tributários
+- Quando usar migrate:fresh --seed vs UPDATE manual
+
+### Scraping & Integração de Dados Externos
+**Arquivo**: `2026-02-24-tax-verification-scraper-comparador.md` ⭐
+- Scraping de sites governamentais com fallback hardcoded
+- Separação Scraper vs Comparador
+- Epsilon para comparação floating-point
+- Padrão Livewire + Modal para verificação assíncrona
 
 ---
 
@@ -40,6 +61,17 @@
 | Livewire morph + Alpine | 2026-02-22-livewire-alpine-morph-conflict.md | Causa Raiz |
 | wire:key hash | 2026-02-22-livewire-alpine-morph-conflict.md | Solucao |
 | x-data em loops | 2026-02-22-livewire-alpine-morph-conflict.md | Prevencao |
+| Bind mount SQLite | 2026-02-24-docker-bind-mount-vs-named-volume.md | Solução |
+| Volume nomeado Docker | 2026-02-24-docker-bind-mount-vs-named-volume.md | O Problema |
+| Permissões storage WSL2 | 2026-02-24-docker-bind-mount-vs-named-volume.md | Procedimento |
+| Percentual vs Decimal BD | 2026-02-24-arquitetura-tributaria-percentual-decimal.md | Convenção Definitiva |
+| aliquota_nominal 600% bug | 2026-02-24-arquitetura-tributaria-percentual-decimal.md | O Bug |
+| DasCalculatorService | 2026-02-24-arquitetura-tributaria-percentual-decimal.md | Regra de Ouro |
+| migrate:fresh vs UPDATE | 2026-02-24-arquitetura-tributaria-percentual-decimal.md | Lição 4 |
+| Scraper fallback hardcoded | 2026-02-24-tax-verification-scraper-comparador.md | Lição 1 |
+| OFFICIAL_BRACKETS | 2026-02-24-tax-verification-scraper-comparador.md | Lição 1 |
+| Epsilon tributário 0.01 | 2026-02-24-tax-verification-scraper-comparador.md | Lição 2 |
+| Scraper vs Comparador | 2026-02-24-tax-verification-scraper-comparador.md | Lição 4 |
 
 ---
 
