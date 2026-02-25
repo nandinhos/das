@@ -1,71 +1,100 @@
-# Backlog — Sincronização Automática do Fallback (OFFICIAL_BRACKETS)
+# Backlog — Versionamento de Tabelas Tributárias
 
 **Data de criação:** 2026-02-25
-**Prioridade:** Média
-**Tipo:** Estudo / Arquitetura
-**Estimativa:** A definir após estudo
+**Prioridade:** Alta
+**Tipo:** Arquitetura / Data Management
+**Estimativa:** ~4h
 
 ---
 
 ## Objetivo
 
-Estudar e definir a melhor estratégia para manter a constante `OFFICIAL_BRACKETS` (fallback hardcoded) sincronizada com os dados oficiais extraídos do Planalto.
+Substituir a constante `OFFICIAL_BRACKETS` hardcoded por um sistema de versionamento de tabelas tributárias com snapshots JSON, permitindo rastreabilidade e correção automática via botão "Corrigir".
 
 ---
 
-## Contexto / Motivação
+## Decisão Arquitetural
 
-Atualmente, quando o scraper extrai dados com sucesso do Planalto e o Comparador detecta diferenças, o botão "Corrigir Tabelas" atualiza **apenas o banco de dados local**. A constante `OFFICIAL_BRACKETS` no código-fonte permanece desatualizada.
+### Remover `OFFICIAL_BRACKETS` como constante fixa
+A constante hardcoded no PHP é difícil de manter e não acompanha atualizações. Será substituída por dados versionados.
 
-Isso significa que se o banco for resetado ou recriado, os dados de fallback inseridos pela seed serão os antigos, não os corrigidos.
+### Criar tabela `tax_bracket_versions`
+```
+tax_bracket_versions
+├── id
+├── version (int, auto-increment)
+├── source (enum: 'seed', 'scraper', 'manual')
+├── payload (JSON — array completo das 6 faixas)
+├── checksum (SHA-256 do payload normalizado)
+├── applied_at (timestamp — quando foi aplicado ao banco)
+├── created_at
+└── updated_at
+```
 
-### Diferenças atuais observadas (2026-02-25)
+### Snapshot inicial em `database/seeders/data/`
+- Arquivo: `database/seeders/data/tax_brackets_v1.json`
+- Contém os dados oficiais vigentes no formato do modelo
+- `TaxBracketSeeder` lê do JSON ao invés da constante PHP
+- Permite atualizar os dados sem alterar código PHP
 
-| Faixa | Campo | Fallback (code) | Oficial (Planalto) |
-|---|---|---|---|
-| 4 | cofins | 14.1 | 13.64 |
-| 4 | pis | 3.05 | 2.96 |
-| 4 | iss | 31.95 | 32.5 |
-| 5 | cofins | 14.42 | 12.82 |
-| 5 | pis | 3.13 | 2.78 |
-| 5 | iss | 31.55 | 33.5 |
+### Botão "Corrigir" cria nova versão
+Quando o usuário clica "Corrigir Tabelas" no diagnóstico:
+1. Atualiza os `TaxBracket` no banco (já implementado)
+2. Cria registro em `tax_bracket_versions` com os dados oficiais
+3. Gera checksum do payload
 
----
-
-## Opções a Estudar
-
-### Opção A — Atualização manual do OFFICIAL_BRACKETS
-- Ao detectar diferenças, o dev atualiza manualmente a constante no código
-- Simples, mas não escalável
-
-### Opção B — Artisan command para gerar o fallback
-- `php artisan scraper:update-fallback`
-- Roda o scraper, pega dados oficiais, gera o array PHP formatado
-- Dev copia e cola no code, ou o command gera um arquivo
-
-### Opção C — Fallback em arquivo JSON externo
-- Mover `OFFICIAL_BRACKETS` de constante PHP para `storage/app/official_brackets.json`
-- O botão "Corrigir" atualiza tanto o banco quanto o JSON
-- Fallback sempre em sync, sem necessidade de deploy
-
-### Opção D — Fallback dinâmico via banco de dados
-- Remover `OFFICIAL_BRACKETS` completamente
-- Fallback usa os dados do próprio banco (que já foram corrigidos)
-- Simplifica, mas perde a referência hardcoded de segurança
+### Comparador calcula checksum
+- Hash SHA-256 do payload normalizado (JSON serializado e ordenado)
+- Compara checksum local vs checksum do scraping
+- Se iguais → "SINCRONIZADO" (sem comparação campo a campo)
+- Se diferentes → comparação detalhada atual
 
 ---
 
-## Questões para Discussão
+## Arquivos a Criar
 
-1. O fallback deve servir como **safety net** (dados seguros hardcoded) ou como **referência atualizada**?
-2. Se o banco for resetado, qual deve ser o comportamento: inserir dados hardcoded ou tentar scrape online?
-3. A seed já usa `OFFICIAL_BRACKETS` — se ela ficar desatualizada, os dados iniciais estarão errados?
-4. Vale investir em automação ou a atualização manual é suficiente para a frequência de mudanças legislativas?
+| Arquivo | Descrição |
+|---|---|
+| `database/migrations/xxx_create_tax_bracket_versions_table.php` | Migration da nova tabela |
+| `app/Models/TaxBracketVersion.php` | Model Eloquent |
+| `database/seeders/data/tax_brackets_v1.json` | Snapshot inicial |
+
+## Arquivos a Modificar
+
+| Arquivo | Mudança |
+|---|---|
+| `app/Services/TaxBracketScraperService.php` | Remover `OFFICIAL_BRACKETS`, fallback lê do JSON ou última versão |
+| `app/Services/TaxBracketComparatorService.php` | Adicionar lógica de checksum |
+| `app/Livewire/ScraperDiagnostic.php` | `applyCorrections()` cria nova versão |
+| `database/seeders/TaxBracketSeeder.php` | Ler do JSON ao invés da constante |
 
 ---
 
-## Dependências
+## Fluxo Proposto
 
-- `TaxBracketScraperService::OFFICIAL_BRACKETS`
-- `TaxBracketSeeder` (usa os dados do fallback para popular o banco)
-- Botão "Corrigir Tabelas" no diagnóstico
+```
+Seed → Lê tax_brackets_v1.json → Popula banco + cria version v1
+                                    ↓
+Diagnóstico → Scraper busca Planalto → Comparador calcula checksum
+                                    ↓
+                            Checksums diferentes?
+                            ├── Não → "SINCRONIZADO"
+                            └── Sim → Mostra diferenças + botão Corrigir
+                                        ↓
+                                Clique "Corrigir"
+                                ├── Atualiza TaxBracket
+                                ├── Cria TaxBracketVersion (v2, source: scraper)
+                                └── Atualiza snapshot JSON (opcional)
+```
+
+---
+
+## Critérios de Aceite
+
+- [ ] Tabela `tax_bracket_versions` criada e funcional
+- [ ] Constante `OFFICIAL_BRACKETS` removida do código
+- [ ] Snapshot JSON em `database/seeders/data/`
+- [ ] Seeder lê do JSON
+- [ ] Botão "Corrigir" registra nova versão no banco
+- [ ] Comparador usa checksum para detecção rápida
+- [ ] Histórico de versões acessível (query simples)
