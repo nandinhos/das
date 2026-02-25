@@ -42,13 +42,20 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 - ✅ Fix porcentagens x100 no frontend (convenção BD vs UI)
 - ✅ Timezone e locale: `America/Sao_Paulo` + `pt_BR`
 
+### Sprint 2: Mobile-First UI Review (2026-02)
+- ✅ Header sempre `flex-row` — elimina empilhamento vertical até 768px
+- ✅ Logo compacto em mobile, CNPJ oculto em mobile
+- ✅ Tabs com shortLabels: "Receitas/Calcular/Histórico/Tabelas" em mobile
+- ✅ Tabela Alíquotas (4 cols): card layout em mobile com campos editáveis
+- ✅ Tabela Repartição (7 cols): card layout mobile com grid 2×3 por faixa
+- ✅ Inputs mobile sem `absolute` positioning (`inline`, `w-full`, `inputmode=decimal`)
+- ✅ Modal de verificação responsivo (`flex-col-reverse`, `overflow-x-auto`, border-radius toque)
+
 ---
 
 ## 📋 BACKLOG (Ideias Priorizáveis)
 
-| Ideia | Prioridade | Arquivo |
-|---|---|---|
-| Revisão Mobile-First completa de todas as views | Alta | [backlog/mobile-first-ui-review.md](backlog/mobile-first-ui-review.md) |
+*Sem itens no momento. Adicione ideias ao backlog para priorização.*
 
 ---
 

@@ -1,10 +1,11 @@
-# Backlog — Revisão Mobile-First de Todas as Views
+# Sprint 2 — Revisão Mobile-First de Todas as Views
 
 **Data de criação:** 2026-02-25
-**Prioridade:** Alta
+**Concluída em:** 2026-02-25
+**Prioridade:** Alta → ✅ Concluída
 **Tipo:** Frontend / UX / Responsividade
 **Agentes responsáveis:** Frontend Agent + Mobile-First Agent
-**Estimativa:** ~1 sprint dedicada
+**Estimativa:** ~1 sprint | **Realizado:** 1 sessão
 
 ---
 
