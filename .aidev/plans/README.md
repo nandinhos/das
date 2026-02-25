@@ -1,4 +1,4 @@
-# 📁 Planejamento - laravel
+# 📁 Planejamento - Calculadora DAS
 
 > Estrutura de planejamento e desenvolvimento organizada
 
@@ -8,12 +8,12 @@
 
 | Pasta | Conteúdo | Status |
 |-------|----------|--------|
-| [📋 Backlog](backlog/) | Ideias futuras | Não priorizadas |
-| [🚀 Features](features/) | Planejados com sprint | Prontos para execução |
-| [🏃 Current](current/) | Em execução AGORA | Sprint ativa |
-| [✅ History](history/) | Concluídos | Arquivado por data |
+| [📋 Backlog](backlog/) | Ideias futuras | 0 pendentes |
+| [🚀 Features](features/) | Planejados com sprint | 0 em planejamento |
+| [🏃 Current](current/) | Em execução AGORA | Nenhuma sprint ativa |
+| [✅ History](history/) | Concluídos | 7 itens |
 | [📚 Archive](archive/) | Documentação | Referências |
-| [🗺️ ROADMAP](ROADMAP.md) | Visão estratégica | Direção geral |
+| [🗺️ ROADMAP](ROADMAP.md) | Visão estratégica | Sprint 1 concluída |
 
 ---
 
@@ -43,7 +43,7 @@ history/YYYY-MM/ (arquivado)
 - **Backlog**: 0 ideia(s)
 - **Features**: 0 planejada(s)
 - **Current**: 0 em execução
-- **History**: 0 concluída(s)
+- **History**: 7 concluída(s)
 
 ---
 
@@ -56,4 +56,4 @@ history/YYYY-MM/ (arquivado)
 
 ---
 
-*Estrutura  - Organização de Planejamento*
+*Última atualização: 2026-02-24*

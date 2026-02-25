@@ -104,7 +104,7 @@ class TaxBracketComparatorService
 
     private function valuesAreEqual(float $value1, float $value2): bool
     {
-        $epsilon = 0.0001;
+        $epsilon = 0.01;
 
         return abs($value1 - $value2) < $epsilon;
     }

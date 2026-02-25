@@ -2,7 +2,10 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
       "env": {
         "CONTEXT7_API_KEY": ""
       },
@@ -10,17 +13,23 @@
     },
     "serena": {
       "command": "uvx",
-      "args": ["serena", "--project=."],
+      "args": [
+        "serena",
+        "--project=."
+      ],
       "description": "Serena server for intelligent code navigation"
     },
     "basic-memory": {
       "command": "uvx",
-      "args": ["basic-memory", "mcp"],
+      "args": [
+        "basic-memory",
+        "mcp"
+      ],
       "description": "Persistent memory for cross-session knowledge"
     }
   },
   "projectConfig": {
-    "name": "laravel",
+    "name": "das",
     "stack": "livewire",
     "version": "1.0.0"
   }
