@@ -1,5 +1,7 @@
 *.log
 .DS_Store
+/.claude
+/lessons-learned
 .env
 .env.backup
 .env.production
