@@ -51,6 +51,7 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 - ✅ Inputs mobile sem `absolute` positioning (`inline`, `w-full`, `inputmode=decimal`)
 - ✅ Modal de verificação responsivo (`flex-col-reverse`, `overflow-x-auto`, border-radius toque)
 - ✅ Tabelas dos modais de correção: `min-w-max` para scroll horizontal sem truncamento de colunas
+- ✅ Padrão Card Layout (mobile-first) em `scraper-diagnostic` e modais do `tax-tables-manager` (Upgrade agente responsivo)
 
 ---
 
@@ -58,7 +59,7 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 
 | # | Item | Prioridade | Bloqueante |
 |---|------|------------|------------|
-| 1 | [Upgrade agente frontend-responsivo — padrões de tabelas em modais](backlog/upgrade-agent-responsivo-table-patterns.md) | Média | Context7 + Laravel Boost |
+|   |      |            |            |
 
 ---
 
@@ -114,6 +115,6 @@ Concluída → history/YYYY-MM/
 
 ---
 
-**Versão:** 3.0
-**Última atualização:** 2026-02-25
+**Versão:** 3.1
+**Última atualização:** 2026-02-25 (pós-sprint mobile-first)
 **Status:** Ativo

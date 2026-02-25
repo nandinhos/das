@@ -8,7 +8,9 @@
 
 | # | Arquivo | Descrição | Prioridade | Bloqueante |
 |---|---------|-----------|------------|------------|
-| 1 | [upgrade-agent-responsivo-table-patterns.md](upgrade-agent-responsivo-table-patterns.md) | Upgrade do agente frontend-responsivo com padrões de tabelas em modais | Média | Context7 + Laravel Boost |
+| # | Arquivo | Descrição | Prioridade | Bloqueante |
+|---|---------|-----------|------------|------------|
+|   |         |           |            |            |
 
 ---
 
@@ -26,10 +28,10 @@ Quando uma ideia for priorizada:
 
 ## 📊 Estatísticas
 
-- **Total de ideias:** 1
+- **Total de ideias:** 0
 - **Prontas para priorização:** 0
 - **Em análise:** 0
-- **Bloqueadas por validação externa:** 1
+- **Bloqueadas por validação externa:** 0
 
 ---
 
