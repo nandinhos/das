@@ -33,19 +33,19 @@
     <header class="sticky top-0 z-40 w-full transition-all duration-300"
             :class="scrolled ? 'bg-white/70 dark:bg-[#161615]/70 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-[#3E3E3A]' : 'bg-transparent border-b border-transparent'">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center py-4 gap-4">
+            <div class="flex flex-row justify-between items-center py-3 gap-2 sm:gap-4">
                 
                 <!-- Logo & Brand -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-blue-600 flex items-center justify-center text-white font-bold font-heading text-xl"
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-white font-bold font-heading text-lg sm:text-xl"
                          style="background: linear-gradient(to bottom right, oklch(70.7% 0.165 254.624), #2563eb);">
                         C
                     </div>
-                    <div>
-                        <h1 class="text-xl font-bold font-heading text-slate-900 dark:text-white leading-tight">
-                            Calculadora DAS <span class="text-sm font-medium text-primary-600 dark:text-primary-400 align-middle ml-1 px-2 py-0.5 rounded-full bg-blue-50 dark:bg-primary-500/10">Anexo III</span>
+                    <div class="min-w-0">
+                        <h1 class="text-base sm:text-xl font-bold font-heading text-slate-900 dark:text-white leading-tight truncate">
+                            Calculadora DAS <span class="text-xs sm:text-sm font-medium text-primary-600 dark:text-primary-400 align-middle ml-1 px-1.5 sm:px-2 py-0.5 rounded-full bg-blue-50 dark:bg-primary-500/10">Anexo III</span>
                         </h1>
-                        <h2 class="text-xs font-medium tracking-wide text-slate-500 dark:text-slate-400 mt-0.5 uppercase">
+                        <h2 class="hidden sm:block text-xs font-medium tracking-wide text-slate-500 dark:text-slate-400 mt-0.5 uppercase">
                             Coral 360 LTDA &bull; CNPJ 52.507.002/0001-75
                         </h2>
                     </div>
@@ -99,10 +99,10 @@
         <div class="mb-8"
              x-data="{
                 tabs: [
-                    { id: 'revenue', label: 'Dashboard Receitas' },
-                    { id: 'calculate', label: 'Calcular DAS' },
-                    { id: 'history', label: 'Histórico' },
-                    { id: 'tables', label: 'Tabelas Tributárias' }
+                    { id: 'revenue',   label: 'Dashboard Receitas',   shortLabel: 'Receitas' },
+                    { id: 'calculate', label: 'Calcular DAS',         shortLabel: 'Calcular' },
+                    { id: 'history',   label: 'Histórico',            shortLabel: 'Histórico' },
+                    { id: 'tables',    label: 'Tabelas Tributárias',  shortLabel: 'Tabelas' }
                 ]
              }">
             <nav class="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-2" aria-label="Abas de Navegação">
@@ -121,7 +121,8 @@
                               class="absolute inset-0 rounded-xl shadow-sm -z-10"
                               style="background: linear-gradient(to right, oklch(70.7% 0.165 254.624), #2563eb);"></span>
 
-                        <span x-text="tab.label" class="relative z-10"></span>
+                        <span class="relative z-10 sm:hidden" x-text="tab.shortLabel"></span>
+                        <span class="relative z-10 hidden sm:inline" x-text="tab.label"></span>
                     </button>
                 </template>
             </nav>
