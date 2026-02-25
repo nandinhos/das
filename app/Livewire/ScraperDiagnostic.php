@@ -17,12 +17,11 @@ class ScraperDiagnostic extends Component
     public bool $ran = false;
 
     public array $connectionTest = [];
+    public array $scraperMeta = [];
     public array $scraped = [];
     public array $fallback = [];
     public bool $usedFallback = false;
     public array $comparisonResult = [];
-
-    public static array $tributeFields = ['irpj', 'csll', 'cofins', 'pis', 'cpp', 'iss'];
 
     public function run(): void
     {
@@ -31,7 +30,16 @@ class ScraperDiagnostic extends Component
         // 1. Teste HTTP direto
         $start = microtime(true);
         try {
-            $response = Http::timeout(15)->get(self::PLANALTO_URL);
+            $response = Http::timeout(15)
+                ->withOptions([
+                    'verify' => false,
+                    'curl'   => [CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1],
+                ])
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+                    'Accept'     => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                ])
+                ->get(self::PLANALTO_URL);
             $duration = round((microtime(true) - $start) * 1000);
 
             $this->connectionTest = [
@@ -40,6 +48,7 @@ class ScraperDiagnostic extends Component
                 'duration_ms' => $duration,
                 'url'         => self::PLANALTO_URL,
                 'error'       => null,
+                'html_size'   => strlen($response->body()),
             ];
         } catch (\Exception $e) {
             $duration = round((microtime(true) - $start) * 1000);
@@ -49,51 +58,36 @@ class ScraperDiagnostic extends Component
                 'duration_ms' => $duration,
                 'url'         => self::PLANALTO_URL,
                 'error'       => $e->getMessage(),
+                'html_size'   => 0,
             ];
         }
 
         // 2. Dados do scraper (web ou fallback)
+        $scraperStart = microtime(true);
         $scraper = app(TaxBracketScraperService::class);
         $result = $scraper->fetchOfficialBrackets();
-        
+        $scraperDuration = round((microtime(true) - $scraperStart) * 1000);
+
         $this->scraped      = $result['data'];
         $this->usedFallback = ($result['source'] === 'fallback');
         $this->fallback     = $scraper->getOfficialBracketsFallback();
 
-        // 4. Resultado do comparador
+        // Metadados do scraping
+        $this->scraperMeta = [
+            'source'        => $result['source'],
+            'duration_ms'   => $scraperDuration,
+            'faixas'        => count($result['data']),
+            'campos'        => !empty($result['data']) ? count($result['data'][0]) : 0,
+            'parser'        => 'Regex (preg_match_all)',
+            'encoding'      => 'ISO-8859-1 → UTF-8',
+            'checked_at'    => now()->format('d/m/Y H:i:s'),
+        ];
+
+        // 3. Resultado do comparador
         $this->comparisonResult = app(TaxBracketComparatorService::class)->checkForUpdates();
 
         $this->running = false;
         $this->ran = true;
-    }
-
-    public function highlightCurlError(string $error): string
-    {
-        $error = e($error);
-
-        $patterns = [
-            // URLs → azul-ciano sublinhado
-            '/(https?:\/\/[^\s)]+)/'
-                => '<span class="diag-token-url">$1</span>',
-            // Código hex de erro (ex: 0A000126)
-            '/\b([0-9A-F]{8})\b/'
-                => '<span class="diag-token-errcode">$1</span>',
-            // Números isolados
-            '/(?<![:\w\/])(\b\d+\b)(?![:\w\/])/'
-                => '<span class="diag-token-number">$1</span>',
-            // Palavras-chave de protocolo
-            '/\b(cURL error|errno|OpenSSL|SSL|error)\b/'
-                => '<span class="diag-token-keyword">$1</span>',
-            // Identificadores com underscore (SSL_read, etc.)
-            '/\b([A-Za-z][A-Za-z0-9]*_[A-Za-z_][A-Za-z0-9_]*)\b/'
-                => '<span class="diag-token-method">$1</span>',
-        ];
-
-        foreach ($patterns as $pattern => $replacement) {
-            $error = preg_replace($pattern, $replacement, $error);
-        }
-
-        return $error;
     }
 
     public function render()
