@@ -16,15 +16,18 @@ class TaxBracketComparatorService
 
     public function checkForUpdates(): array
     {
-        $officialBrackets = $this->scraper->fetchOfficialBrackets();
+        $result = $this->scraper->fetchOfficialBrackets();
+        $officialBrackets = $result['data'];
+        $source = $result['source'];
+
         $localBrackets = TaxBracket::orderBy('faixa')->get();
 
         if (empty($officialBrackets)) {
             return [
                 'status' => 'error',
                 'checked_at' => now()->toIso8601String(),
-                'source' => 'fallback',
-                'message' => 'Failed to fetch official brackets',
+                'source' => $source,
+                'message' => 'Failed to fetch official brackets or empty data',
                 'differences' => [],
             ];
         }
@@ -34,7 +37,7 @@ class TaxBracketComparatorService
         return [
             'status' => empty($differences) ? 'uptodate' : 'outdated',
             'checked_at' => now()->toIso8601String(),
-            'source' => 'site_planalto',
+            'source' => $source,
             'differences' => $differences,
         ];
     }

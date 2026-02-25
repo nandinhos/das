@@ -101,16 +101,35 @@ class TaxBracketScraperService
                     'status' => $response->status(),
                 ]);
 
-                return $this->getOfficialBracketsFallback();
+                return [
+                    'data' => $this->getOfficialBracketsFallback(),
+                    'source' => 'fallback',
+                ];
             }
 
-            return $this->parseHtml($response->body());
+            $scraped = $this->parseHtml($response->body());
+
+            // Se o parsing falhou (vazio) ou retornou fallback, reportar como fallback
+            if (empty($scraped) || $scraped === self::OFFICIAL_BRACKETS) {
+                return [
+                    'data' => $this->getOfficialBracketsFallback(),
+                    'source' => 'fallback',
+                ];
+            }
+
+            return [
+                'data' => $scraped,
+                'source' => 'site_planalto',
+            ];
         } catch (\Exception $e) {
             Log::error('Error fetching tax brackets', [
                 'error' => $e->getMessage(),
             ]);
 
-            return $this->getOfficialBracketsFallback();
+            return [
+                'data' => $this->getOfficialBracketsFallback(),
+                'source' => 'fallback',
+            ];
         }
     }
 
