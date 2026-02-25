@@ -1,4 +1,4 @@
-# 🗺️ ROADMAP DE IMPLEMENTAÇÃO - laravel
+# 🗺️ ROADMAP DE IMPLEMENTAÇÃO - Calculadora DAS
 
 > Documento mestre de planejamento de funcionalidades
 > Formato: AI Dev Superpowers Sprint Planning
@@ -16,45 +16,54 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 
 ---
 
-## 🎯 SPRINTS PLANEJADOS
+## ✅ SPRINTS CONCLUÍDOS
 
-### 📅 SPRINT 1: Autenticação Segura
-**Objetivo:** Implementar controle de acesso inicial ao sistema para proteção da calculadora.
-**Status:** 🟢 Ativa
-
-#### Funcionalidades:
-
-##### 1.1 - Tela de Login
-**Prioridade:** 🔴 CRÍTICA
-**Status:** 🟢 Em andamento
-
-**Requisitos de Negócio:**
-- Acesso restrito de uso
-- Interface 100% em Português BR
-- Alinhamento de design (Air Force Blue, Glassmorphismo)
-
-**Requisitos Técnicos:**
-- [x] Criar testes unitários e rodar fase Red (TDD)
-- [ ] Construir o componente Livewire de autenticação
-- [ ] Construir a view de autenticação com Laravel/Blade
+### Sprint 1: Fundação (2026-02)
+- ✅ Design System completo (Air Force Blue, Glassmorphismo, dark mode)
+- ✅ Autenticação segura (Login, Livewire, rotas protegidas, throttle)
+- ✅ Calculadora DAS funcional (RBT12, alíquota efetiva, repartição de tributos)
+- ✅ Histórico de cálculos
+- ✅ Gerenciamento de receitas
+- ✅ Tabelas tributárias editáveis (Anexo III — Simples Nacional)
+- ✅ Verificação de atualização das tabelas (scraper + comparador + UI)
+- ✅ Arquitetura tributária — fonte única de verdade (DasCalculatorService)
+- ✅ Infraestrutura Docker com bind mount (BD unificado host/container)
 
 ---
 
-## 📊 RESUMO DE PRIORIDADES
+## 🎯 PRÓXIMAS SPRINTS (A DEFINIR)
 
-| Sprint | Funcionalidade | Prioridade | Status |
-|--------|----------------|------------|--------|
-| 1 | Tela de Login | 🔴 CRÍTICA | 🟢 Em andamento |
+*Sem sprints planejadas. Adicione ideias ao backlog para priorização.*
 
 ---
 
 ## 🔄 FLUXO DE TRABALHO
 
-1. **Antes de começar**: Use `aidev feature add "nome"` para criar o documento da feature.
-2. **Durante**: Siga o checklist em `.aidev/plans/features/nome.md`.
-3. **Ao finalizar**: Use `aidev feature finish "nome"` para mover para o histórico.
+1. **Nova ideia**: Adicionar em `backlog/` com descrição e prioridade
+2. **Priorizar**: Mover para `features/` com plano detalhado
+3. **Executar**: Mover para `current/` e registrar no ROADMAP
+4. **Concluir**: Mover para `history/YYYY-MM/`
 
 ---
 
-**Versão:** 1.0 (v3.7)
+## 🏗️ ESTADO ATUAL DA APLICAÇÃO
+
+### Funcionalidades implementadas:
+- Login com proteção de rotas (middleware auth)
+- Cálculo de DAS (Anexo III — Simples Nacional)
+- 6 faixas tributárias editáveis via interface
+- Histórico de cálculos por período
+- Gerenciamento de receitas mensais
+- Verificação automática de atualizações das tabelas tributárias
+
+### Convenções técnicas:
+- `TaxBracket` (BD): percentual (6 = 6%)
+- `Calculation` (BD): decimal (0.06 = 6%)
+- `DasCalculatorService`: única fonte de cálculo; divide por 100 ao ler TaxBracket
+- Banco: `storage/app/database.sqlite` (bind mount Docker ↔ host)
+
+---
+
+**Versão:** 2.0
+**Última atualização:** 2026-02-24
 **Status:** Ativo

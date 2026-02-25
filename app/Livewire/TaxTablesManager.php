@@ -121,13 +121,7 @@ class TaxTablesManager extends Component
         $cleanValue = str_replace(',', '.', (string) $value);
 
         if (is_numeric($cleanValue)) {
-            // Se o campo for um percentual, a UI nos enviou como inteiro/decimal (ex: 6 para 6%).
-            // Dividimos por 100 para voltar à base decimal de cálculo.
-            if (! in_array($field, ['faixa', 'deducao', 'min_rbt12', 'max_rbt12', 'id'])) {
-                $cleanValue = (float) $cleanValue / 100;
-            }
-
-            $bracket->$field = $cleanValue;
+            $bracket->$field = (float) $cleanValue;
             $bracket->save();
             $this->brackets[$index][$field] = $cleanValue;
 

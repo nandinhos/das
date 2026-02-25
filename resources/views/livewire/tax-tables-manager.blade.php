@@ -47,7 +47,7 @@
                             </td>
 
                             <td class="text-right relative">
-                                <div x-data="{ editing: false, val: '{{ number_format($row['aliquota_nominal'] * 100, 2, '.', '') }}' }" @click.away="editing = false">
+                                <div x-data="{ editing: false, val: '{{ number_format($row['aliquota_nominal'], 2, '.', '') }}' }" @click.away="editing = false">
                                     <span x-show="!editing"
                                           @click="editing = true; $nextTick(() => $refs.aliquota_{{ $index }}.focus())"
                                           class="cursor-pointer border-b border-dashed border-primary-300 dark:border-primary-600 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
@@ -107,7 +107,7 @@
 
                             @foreach(['irpj', 'csll', 'cofins', 'pis', 'cpp', 'iss'] as $tfield)
                                 <td class="text-right relative">
-                                    <div x-data="{ editing: false, val: '{{ number_format($row[$tfield] * 100, 2, '.', '') }}' }" @click.away="editing = false">
+                                    <div x-data="{ editing: false, val: '{{ number_format($row[$tfield], 2, '.', '') }}' }" @click.away="editing = false">
                                         <span x-show="!editing" 
                                               @click="editing = true; $nextTick(() => $refs.field_{{ $tfield }}_{{ $index }}.focus())" 
                                               class="cursor-pointer border-b border-dashed border-emerald-300 dark:border-emerald-700 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">

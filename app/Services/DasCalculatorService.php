@@ -162,7 +162,7 @@ class DasCalculatorService
                 'faixa' => $bracket->faixa,
                 'min' => (float) $bracket->min_rbt12,
                 'max' => (float) $bracket->max_rbt12,
-                'nominal' => (float) $bracket->aliquota_nominal,
+                'nominal' => (float) $bracket->aliquota_nominal / 100,
                 'deducao' => (float) $bracket->deducao,
             ];
         })->toArray();
@@ -172,12 +172,12 @@ class DasCalculatorService
     {
         return TaxBracket::orderBy('faixa')->get()->keyBy('faixa')->map(function ($bracket) {
             return [
-                'irpj' => (float) $bracket->irpj,
-                'csll' => (float) $bracket->csll,
-                'cofins' => (float) $bracket->cofins,
-                'pis' => (float) $bracket->pis,
-                'cpp' => (float) $bracket->cpp,
-                'iss' => (float) $bracket->iss,
+                'irpj' => (float) $bracket->irpj / 100,
+                'csll' => (float) $bracket->csll / 100,
+                'cofins' => (float) $bracket->cofins / 100,
+                'pis' => (float) $bracket->pis / 100,
+                'cpp' => (float) $bracket->cpp / 100,
+                'iss' => (float) $bracket->iss / 100,
             ];
         })->toArray();
     }
