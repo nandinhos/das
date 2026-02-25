@@ -179,7 +179,7 @@
                 {{-- Tabela dos dados extraídos --}}
                 @if(!empty($scraped))
                     <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
-                        <table class="w-full text-xs font-mono">
+                        <table class="min-w-max w-full text-xs font-mono">
                             <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                 <tr>
                                     @foreach(array_keys($scraped[0]) as $key)
@@ -215,7 +215,7 @@
 
                 @if(!empty($fallback))
                     <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
-                        <table class="w-full text-xs font-mono">
+                        <table class="min-w-max w-full text-xs font-mono">
                             <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                 <tr>
                                     @foreach(array_keys($fallback[0]) as $key)
@@ -249,7 +249,7 @@
                     $source = $comparisonResult['source'] ?? '';
                 @endphp
 
-                <div class="flex flex-wrap items-center justify-between gap-3" x-data="{ showConfirm: false }">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3" x-data="{ showConfirm: false }">
                     <div class="flex flex-wrap items-center gap-3">
                         @if($status === 'uptodate' || $corrected)
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
@@ -277,7 +277,7 @@
                     @if($status === 'outdated' && !$corrected)
                         @if($comparisonResult['source'] !== 'fallback')
                             <button @click="showConfirm = true"
-                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md active:scale-95">
+                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md active:scale-95">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
@@ -285,7 +285,7 @@
                             </button>
                         @else
                             <button disabled
-                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-400 bg-slate-200 dark:bg-[#2a2a2a] dark:text-slate-500 rounded-lg cursor-not-allowed"
+                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 text-sm font-semibold text-slate-400 bg-slate-200 dark:bg-[#2a2a2a] dark:text-slate-500 rounded-lg cursor-not-allowed"
                                     title="Dados de fallback não são confiáveis para atualização automática">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -371,7 +371,7 @@
                             {{ count($comparisonResult['differences']) }} diferença(s) encontrada(s):
                         </p>
                         <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
-                            <table class="w-full text-xs font-mono">
+                            <table class="min-w-max w-full text-xs font-mono">
                                 <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                     <tr>
                                         <th class="px-3 py-2.5 text-left font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide text-[10px]">Faixa</th>
