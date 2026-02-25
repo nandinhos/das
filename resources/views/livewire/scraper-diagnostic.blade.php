@@ -176,9 +176,25 @@
                     </div>
                 @endif
 
-                {{-- Tabela dos dados extraídos --}}
+                {{-- Dados extraídos: cards mobile + tabela desktop --}}
                 @if(!empty($scraped))
-                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
+                    {{-- Cards: mobile (< 640px) --}}
+                    <div class="sm:hidden space-y-2">
+                        @foreach($scraped as $row)
+                            <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] bg-white dark:bg-[#161615] p-3">
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                                    @foreach($row as $key => $value)
+                                        <div>
+                                            <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ $key }}</p>
+                                            <p class="text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mt-0.5 break-all">{{ $value !== '' && $value !== null ? $value : '—' }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    {{-- Tabela: desktop (>= 640px) --}}
+                    <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
                         <table class="min-w-max w-full text-xs font-mono">
                             <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                 <tr>
@@ -214,7 +230,23 @@
                 </p>
 
                 @if(!empty($fallback))
-                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
+                    {{-- Cards: mobile (< 640px) --}}
+                    <div class="sm:hidden space-y-2">
+                        @foreach($fallback as $row)
+                            <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] bg-white dark:bg-[#161615] p-3">
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                                    @foreach($row as $key => $value)
+                                        <div>
+                                            <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ $key }}</p>
+                                            <p class="text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mt-0.5 break-all">{{ $value !== '' && $value !== null ? $value : '—' }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    {{-- Tabela: desktop (>= 640px) --}}
+                    <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
                         <table class="min-w-max w-full text-xs font-mono">
                             <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                 <tr>
