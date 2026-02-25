@@ -19,12 +19,13 @@
 | Arquitetura Tributária — Fonte Única de Verdade | Arquitetura | [fonte-unica-verdade-tributaria.md](2026-02/fonte-unica-verdade-tributaria.md) |
 | View de Diagnóstico do Scraper + Botão Corrigir | Feature | [scraper-diagnostic-view.md](2026-02/scraper-diagnostic-view.md) |
 | Versionamento de Tabelas Tributárias (tax_bracket_versions) | Arquitetura | [tax-bracket-versioning.md](2026-02/tax-bracket-versioning.md) |
+| Sprint 2 — Mobile-First UI Review (header + tabelas) | Frontend/UX | [mobile-first-ui-review.md](2026-02/mobile-first-ui-review.md) |
 
 ---
 
 ## 📊 Estatísticas
 
-- **Total concluído:** 9 items
+- **Total concluído:** 10 items
 - **Período:** 2026-02
 
 ---

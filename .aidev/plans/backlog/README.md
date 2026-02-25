@@ -6,9 +6,7 @@
 
 ## 🎯 Ideias em Backlog
 
-| Arquivo | Descrição | Prioridade | Agentes |
-|---|---|---|---|
-| [mobile-first-ui-review.md](./mobile-first-ui-review.md) | Revisão completa mobile-first de todas as views e tabelas | Alta | Frontend + Mobile-First |
+*Nenhum item pendente no momento.*
 
 ---
 
@@ -26,8 +24,8 @@ Quando uma ideia for priorizada:
 
 ## 📊 Estatísticas
 
-- **Total de ideias:** 1
-- **Prontas para priorização:** 1
+- **Total de ideias:** 0
+- **Prontas para priorização:** 0
 - **Em análise:** 0
 
 ---
