@@ -19,51 +19,91 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 ## ✅ SPRINTS CONCLUÍDOS
 
 ### Sprint 1: Fundação (2026-02)
+
+#### Core da aplicação
 - ✅ Design System completo (Air Force Blue, Glassmorphismo, dark mode)
 - ✅ Autenticação segura (Login, Livewire, rotas protegidas, throttle)
 - ✅ Calculadora DAS funcional (RBT12, alíquota efetiva, repartição de tributos)
 - ✅ Histórico de cálculos
 - ✅ Gerenciamento de receitas
 - ✅ Tabelas tributárias editáveis (Anexo III — Simples Nacional)
-- ✅ Verificação de atualização das tabelas (scraper + comparador + UI)
-- ✅ Arquitetura tributária — fonte única de verdade (DasCalculatorService)
 - ✅ Infraestrutura Docker com bind mount (BD unificado host/container)
+
+#### Qualidade de dados tributários
+- ✅ Scraper do Planalto (`TaxBracketScraperService`) — extração via Regex (11 campos)
+- ✅ Comparador de tabelas (`TaxBracketComparatorService`) — checksum SHA-256
+- ✅ View de Diagnóstico (`/diagnostico`) — Pipeline, JSON colorido, badge SCRAPING/FALLBACK
+- ✅ Botão "Corrigir Tabelas" — atualiza banco e registra versão com modal Alpine.js
+- ✅ Versionamento de tabelas tributárias (`tax_bracket_versions`) com snapshots JSON
+- ✅ Remoção da constante `OFFICIAL_BRACKETS` hardcoded
+
+#### Refatorações e arquitetura
+- ✅ `DasCalculatorService` como única fonte de verdade do cálculo
+- ✅ Fix porcentagens x100 no frontend (convenção BD vs UI)
+- ✅ Timezone e locale: `America/Sao_Paulo` + `pt_BR`
+
+---
+
+## 📋 BACKLOG (Ideias Priorizáveis)
+
+| Ideia | Prioridade | Arquivo |
+|---|---|---|
+| Revisão Mobile-First completa de todas as views | Alta | [backlog/mobile-first-ui-review.md](backlog/mobile-first-ui-review.md) |
 
 ---
 
 ## 🎯 PRÓXIMAS SPRINTS (A DEFINIR)
 
-*Sem sprints planejadas. Adicione ideias ao backlog para priorização.*
+Para iniciar nova sprint:
+1. Escolher item(ns) do backlog
+2. Mover para `features/` com plano detalhado
+3. Registrar aqui como "Sprint N: Nome (YYYY-MM)"
+4. Executar e mover para `history/`
 
 ---
 
 ## 🔄 FLUXO DE TRABALHO
 
-1. **Nova ideia**: Adicionar em `backlog/` com descrição e prioridade
-2. **Priorizar**: Mover para `features/` com plano detalhado
-3. **Executar**: Mover para `current/` e registrar no ROADMAP
-4. **Concluir**: Mover para `history/YYYY-MM/`
+```
+Nova ideia → backlog/
+Priorizada → features/  (com plano detalhado)
+Em execução → current/
+Concluída → history/YYYY-MM/
+```
 
 ---
 
 ## 🏗️ ESTADO ATUAL DA APLICAÇÃO
 
-### Funcionalidades implementadas:
-- Login com proteção de rotas (middleware auth)
-- Cálculo de DAS (Anexo III — Simples Nacional)
-- 6 faixas tributárias editáveis via interface
-- Histórico de cálculos por período
-- Gerenciamento de receitas mensais
-- Verificação automática de atualizações das tabelas tributárias
+### Funcionalidades implementadas
 
-### Convenções técnicas:
-- `TaxBracket` (BD): percentual (6 = 6%)
-- `Calculation` (BD): decimal (0.06 = 6%)
-- `DasCalculatorService`: única fonte de cálculo; divide por 100 ao ler TaxBracket
-- Banco: `storage/app/database.sqlite` (bind mount Docker ↔ host)
+| Área | Funcionalidade | Status |
+|---|---|---|
+| Auth | Login com proteção de rotas | ✅ |
+| Cálculo | DAS Anexo III — Simples Nacional | ✅ |
+| Tributário | 6 faixas editáveis via interface | ✅ |
+| Tributário | Versionamento de tabelas (snapshots JSON) | ✅ |
+| Tributário | Scraper do Planalto (Regex, 11 campos) | ✅ |
+| Tributário | Comparador com checksum SHA-256 | ✅ |
+| Dev Tool | `/diagnostico` — diagnóstico do scraper | ✅ |
+| Dev Tool | Botão "Corrigir Tabelas" com modal | ✅ |
+| Histórico | Cálculos por período | ✅ |
+| Receitas | Gerenciamento mensal | ✅ |
+| Infra | Docker + bind mount SQLite | ✅ |
+
+### Convenções técnicas
+
+| Convenção | Detalhe |
+|---|---|
+| `TaxBracket` (BD) | Percentual inteiro (6 = 6%) |
+| `Calculation` (BD) | Decimal (0.06 = 6%) |
+| `DasCalculatorService` | Única fonte de cálculo; divide por 100 ao ler TaxBracket |
+| Banco | `storage/app/database.sqlite` (bind mount Docker ↔ host) |
+| Timezone | `America/Sao_Paulo` |
+| Locale | `pt_BR` |
 
 ---
 
-**Versão:** 2.0
-**Última atualização:** 2026-02-24
+**Versão:** 3.0
+**Última atualização:** 2026-02-25
 **Status:** Ativo

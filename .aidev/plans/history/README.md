@@ -17,14 +17,16 @@
 | Fix: Porcentagens 600% no Frontend | Bug Fix | [fix-tax-percentages-display.md](2026-02/fix-tax-percentages-display.md) |
 | Unificar Lógica de Cálculo | Refatoração | [unify-calculation-logic.md](2026-02/unify-calculation-logic.md) |
 | Arquitetura Tributária — Fonte Única de Verdade | Arquitetura | [fonte-unica-verdade-tributaria.md](2026-02/fonte-unica-verdade-tributaria.md) |
+| View de Diagnóstico do Scraper + Botão Corrigir | Feature | [scraper-diagnostic-view.md](2026-02/scraper-diagnostic-view.md) |
+| Versionamento de Tabelas Tributárias (tax_bracket_versions) | Arquitetura | [tax-bracket-versioning.md](2026-02/tax-bracket-versioning.md) |
 
 ---
 
 ## 📊 Estatísticas
 
-- **Total concluído:** 7 items
+- **Total concluído:** 9 items
 - **Período:** 2026-02
 
 ---
 
-*Última atualização: 2026-02-24*
+*Última atualização: 2026-02-25*
