@@ -241,7 +241,27 @@
                                         O sistema irá atualizar <strong>{{ count($correctionSummary) }}</strong> campo(s) com os valores oficiais:
                                     </p>
 
-                                    <div class="max-h-40 overflow-y-auto overflow-x-auto mb-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                                    {{-- Cards: mobile --}}
+                                    <div class="sm:hidden space-y-2 mb-4">
+                                        @foreach($correctionSummary as $item)
+                                            <div class="das-card p-3">
+                                                <p class="text-xs font-semibold das-text mb-2">{{ $item['faixa'] }}ª Faixa — {{ $item['field'] }}</p>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <p class="text-xs das-text-muted mb-0.5">De</p>
+                                                        <p class="text-sm font-semibold text-red-500">{{ is_numeric($item['current']) ? number_format($item['current'], 4, ',', '.') : $item['current'] }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs das-text-muted mb-0.5">Para</p>
+                                                        <p class="text-sm font-semibold text-green-500">{{ is_numeric($item['official']) ? number_format($item['official'], 4, ',', '.') : $item['official'] }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Tabela: desktop --}}
+                                    <div class="hidden sm:block max-h-40 overflow-y-auto mb-4 rounded-lg border border-slate-200 dark:border-slate-700">
                                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                                             <thead class="bg-gray-50 dark:bg-slate-700">
                                                 <tr>
@@ -301,7 +321,27 @@
                                                 Última verificação: {{ \Carbon\Carbon::parse($checkResult['checked_at'])->format('d/m/Y H:i') }}
                                             </p>
 
-                                            <div class="max-h-60 overflow-y-auto overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                                            {{-- Cards: mobile --}}
+                                            <div class="sm:hidden space-y-2">
+                                                @foreach($checkResult['differences'] as $diff)
+                                                    <div class="das-card p-3">
+                                                        <p class="text-xs font-semibold das-text mb-2">{{ $diff['faixa'] }}ª Faixa — {{ $diff['field'] }}</p>
+                                                        <div class="grid grid-cols-2 gap-2">
+                                                            <div>
+                                                                <p class="text-xs das-text-muted mb-0.5">Atual</p>
+                                                                <p class="text-sm font-semibold text-red-600">{{ is_numeric($diff['current_value']) ? number_format($diff['current_value'], 4, ',', '.') : $diff['current_value'] }}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p class="text-xs das-text-muted mb-0.5">Oficial</p>
+                                                                <p class="text-sm font-semibold text-green-600">{{ is_numeric($diff['official_value']) ? number_format($diff['official_value'], 4, ',', '.') : $diff['official_value'] }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            {{-- Tabela: desktop --}}
+                                            <div class="hidden sm:block max-h-60 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700">
                                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                                     <thead class="bg-gray-50 dark:bg-slate-700">
                                                         <tr>
