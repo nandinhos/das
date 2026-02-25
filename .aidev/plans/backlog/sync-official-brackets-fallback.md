@@ -1,9 +1,9 @@
 # Backlog — Versionamento de Tabelas Tributárias
 
 **Data de criação:** 2026-02-25
-**Prioridade:** Alta
+**Prioridade:** Alta → ✅ Concluída
 **Tipo:** Arquitetura / Data Management
-**Estimativa:** ~4h
+**Estimativa:** ~4h | **Realizado:** 2026-02-25
 
 ---
 
@@ -91,10 +91,10 @@ Diagnóstico → Scraper busca Planalto → Comparador calcula checksum
 
 ## Critérios de Aceite
 
-- [ ] Tabela `tax_bracket_versions` criada e funcional
-- [ ] Constante `OFFICIAL_BRACKETS` removida do código
-- [ ] Snapshot JSON em `database/seeders/data/`
-- [ ] Seeder lê do JSON
-- [ ] Botão "Corrigir" registra nova versão no banco
-- [ ] Comparador usa checksum para detecção rápida
-- [ ] Histórico de versões acessível (query simples)
+- [x] Tabela `tax_bracket_versions` criada e funcional
+- [x] Constante `OFFICIAL_BRACKETS` removida do código
+- [x] Snapshot JSON em `database/seeders/data/tax_brackets_v1.json`
+- [x] Seeder lê do JSON
+- [x] Botão "Corrigir" registra nova versão no banco
+- [x] Comparador usa checksum SHA-256 para detecção rápida
+- [x] Histórico de versões acessível (`TaxBracketVersion::all()`)
