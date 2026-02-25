@@ -179,15 +179,23 @@
                 {{-- Dados extraídos: cards mobile + tabela desktop --}}
                 @if(!empty($scraped))
                     {{-- Cards: mobile (< 640px) --}}
-                    <div class="sm:hidden space-y-2">
-                        @foreach($scraped as $row)
-                            <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] bg-white dark:bg-[#161615] p-3">
-                                <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <div class="sm:hidden space-y-3">
+                        @foreach($scraped as $index => $row)
+                            <div class="das-card p-4">
+                                <div class="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-[#2a2a2a] pb-2">
+                                    <span class="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-tighter">Faixa #{{ $index + 1 }}</span>
+                                    @if(isset($row['FAIXA']))
+                                        <span class="text-[10px] font-mono das-text-muted">ID: {{ $row['FAIXA'] }}</span>
+                                    @endif
+                                </div>
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-3">
                                     @foreach($row as $key => $value)
-                                        <div>
-                                            <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ $key }}</p>
-                                            <p class="text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mt-0.5 break-all">{{ $value !== '' && $value !== null ? $value : '—' }}</p>
-                                        </div>
+                                        @if($key !== 'FAIXA')
+                                            <div>
+                                                <p class="text-[10px] font-semibold uppercase tracking-tight text-slate-400 dark:text-slate-500 mb-0.5">{{ $key }}</p>
+                                                <p class="text-xs font-mono font-medium text-slate-700 dark:text-slate-300 break-all">{{ $value !== '' && $value !== null ? $value : '—' }}</p>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -231,14 +239,18 @@
 
                 @if(!empty($fallback))
                     {{-- Cards: mobile (< 640px) --}}
-                    <div class="sm:hidden space-y-2">
-                        @foreach($fallback as $row)
-                            <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] bg-white dark:bg-[#161615] p-3">
-                                <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <div class="sm:hidden space-y-3">
+                        @foreach($fallback as $index => $row)
+                            <div class="das-card p-4">
+                                <div class="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-[#2a2a2a] pb-2">
+                                    <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-tighter">Referência Faixa #{{ $index + 1 }}</span>
+                                    <span class="text-[10px] font-mono das-text-muted">HARDCODED</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-3">
                                     @foreach($row as $key => $value)
                                         <div>
-                                            <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ $key }}</p>
-                                            <p class="text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mt-0.5 break-all">{{ $value !== '' && $value !== null ? $value : '—' }}</p>
+                                            <p class="text-[10px] font-semibold uppercase tracking-tight text-slate-400 dark:text-slate-500 mb-0.5">{{ $key }}</p>
+                                            <p class="text-xs font-mono font-medium text-slate-700 dark:text-slate-300 break-all">{{ $value !== '' && $value !== null ? $value : '—' }}</p>
                                         </div>
                                     @endforeach
                                 </div>
@@ -402,7 +414,30 @@
                         <p class="text-xs font-semibold das-text-muted mb-2">
                             {{ count($comparisonResult['differences']) }} diferença(s) encontrada(s):
                         </p>
-                        <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
+                        {{-- Cards: mobile --}}
+                        <div class="sm:hidden space-y-3">
+                            @foreach($comparisonResult['differences'] as $diff)
+                                <div class="das-card p-4 border-l-4 border-l-amber-500">
+                                    <div class="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-[#2a2a2a] pb-2">
+                                        <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-tighter">{{ $diff['faixa'] ?? '-' }}ª Faixa</span>
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">{{ $diff['field'] ?? '-' }}</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-[10px] font-semibold uppercase tracking-tight text-slate-400 dark:text-slate-500 mb-1">Local</p>
+                                            <p class="text-sm font-mono font-bold text-rose-600 dark:text-rose-400">{{ $diff['current_value'] ?? $diff['local'] ?? '-' }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] font-semibold uppercase tracking-tight text-slate-400 dark:text-slate-500 mb-1">Oficial (Web)</p>
+                                            <p class="text-sm font-mono font-bold text-emerald-600 dark:text-emerald-400">{{ $diff['official_value'] ?? $diff['official'] ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        {{-- Tabela: desktop --}}
+                        <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200 dark:border-[#3E3E3A]">
                             <table class="min-w-max w-full text-xs font-mono">
                                 <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                     <tr>
