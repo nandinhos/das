@@ -29,6 +29,12 @@
 - wire:key com hash dinâmico
 - Reatividade em loops @foreach
 
+**Arquivo**: `2026-02-25-livewire-alpine-modal-confirm-pattern.md` ⭐
+- Modal Alpine.js substituindo `wire:confirm` (dark mode + dados dinâmicos)
+- Padrão `x-data + x-show + fixed inset-0 z-50` para confirmação destrutiva
+- Blade escapa `"` em atributos HTML — usar `window.fn(@js($data))` via `<script>`
+- `style="display: none"` obrigatório para evitar flash no carregamento
+
 ### Arquitetura Tributária / Data Model
 **Arquivo**: `2026-02-24-arquitetura-tributaria-percentual-decimal.md` ⭐
 - Convenção TaxBracket=percentual, Calculation=decimal
@@ -43,6 +49,12 @@
 - Separação Scraper vs Comparador
 - Epsilon para comparação floating-point
 - Padrão Livewire + Modal para verificação assíncrona
+
+**Arquivo**: `2026-02-25-scraper-regex-diagnostico-alpine.md`
+- DomCrawler vs Regex para HTML governamental ISO-8859-1 (~2MB)
+- Merge de duas tabelas HTML por índice (Alíquotas + Repartição Anexo III)
+- `mb_convert_encoding` obrigatório para sites do Planalto
+- Novas propriedades Livewire requerem rebuild do container Docker
 
 ---
 
@@ -72,6 +84,16 @@
 | OFFICIAL_BRACKETS | 2026-02-24-tax-verification-scraper-comparador.md | Lição 1 |
 | Epsilon tributário 0.01 | 2026-02-24-tax-verification-scraper-comparador.md | Lição 2 |
 | Scraper vs Comparador | 2026-02-24-tax-verification-scraper-comparador.md | Lição 4 |
+| wire:confirm substituição | 2026-02-25-livewire-alpine-modal-confirm-pattern.md | Problema |
+| Modal Alpine.js Livewire | 2026-02-25-livewire-alpine-modal-confirm-pattern.md | Solução |
+| x-show + fixed inset-0 | 2026-02-25-livewire-alpine-modal-confirm-pattern.md | Padrão Canônico |
+| Blade escapa aspas x-data | 2026-02-25-livewire-alpine-modal-confirm-pattern.md | Bônus |
+| $wire.method() Alpine | 2026-02-25-livewire-alpine-modal-confirm-pattern.md | Padrão Canônico |
+| DomCrawler vs Regex | 2026-02-25-scraper-regex-diagnostico-alpine.md | Lição 1 |
+| ISO-8859-1 Planalto | 2026-02-25-scraper-regex-diagnostico-alpine.md | Lição 3 |
+| mb_convert_encoding | 2026-02-25-scraper-regex-diagnostico-alpine.md | Lição 3 |
+| Livewire rebuild container | 2026-02-25-scraper-regex-diagnostico-alpine.md | Lição 4 |
+| Merge tabelas HTML índice | 2026-02-25-scraper-regex-diagnostico-alpine.md | Lição 2 |
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Data de criação:** 2026-02-24
 **Última atualização:** 2026-02-25
-**Prioridade:** Média → ✅ Concluída (parcial)
+**Prioridade:** Média → ✅ Concluída (total)
 **Tipo:** Dev Tool / Debugging
 **Estimativa:** ~2h (original) | +1h (botão Corrigir)
 
@@ -34,7 +34,7 @@ O `parseRow()` original (DomCrawler) extraía **apenas 5 campos**. Foi refatorad
 - [x] Seção 4 exibe o resultado completo do comparador com JSON colorido
 - [x] Pipeline de Extração com metadados (fonte, parser, encoding, duração)
 - [x] JSON com syntax highlighting (Alpine.js + VS Code colors)
-- [ ] **Botão "Corrigir Tabelas"** no Comparador (ver plano abaixo)
+- [x] **Botão "Corrigir Tabelas"** no Comparador (ver plano abaixo)
 
 ---
 
