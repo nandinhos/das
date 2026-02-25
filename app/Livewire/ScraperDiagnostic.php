@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\TaxBracket;
+use App\Models\TaxBracketVersion;
 use App\Services\TaxBracketComparatorService;
 use App\Services\TaxBracketScraperService;
 use Illuminate\Support\Facades\Http;
@@ -76,7 +77,7 @@ class ScraperDiagnostic extends Component
 
         $this->scraped      = $result['data'];
         $this->usedFallback = ($result['source'] === 'fallback');
-        $this->fallback     = $scraper->getOfficialBracketsFallback();
+        $this->fallback     = $scraper->getFallbackBrackets();
 
         // Metadados do scraping
         $this->scraperMeta = [
@@ -120,9 +121,18 @@ class ScraperDiagnostic extends Component
                 $updated++;
             }
 
+            TaxBracketVersion::create([
+                'version'    => TaxBracketVersion::nextVersion(),
+                'source'     => 'scraper',
+                'payload'    => $this->scraped,
+                'checksum'   => TaxBracketComparatorService::computeChecksum($this->scraped),
+                'applied_at' => now(),
+            ]);
+
             Log::info('Tabelas tributárias corrigidas via diagnóstico', [
                 'faixas_atualizadas' => $updated,
-                'source' => $this->comparisonResult['source'],
+                'source'             => $this->comparisonResult['source'],
+                'version'            => TaxBracketVersion::max('version'),
             ]);
 
             // Reexecuta comparador para confirmar sincronização

@@ -206,8 +206,8 @@
             </div>
         </x-das.section>
 
-        {{-- SEÇÃO 4: OFFICIAL_BRACKETS (referência hardcoded) --}}
-        <x-das.section title="OFFICIAL_BRACKETS — Referência Hardcoded">
+        {{-- SEÇÃO 4: Dados de Fallback (versão versionada) --}}
+        <x-das.section title="Fallback — Dados de Referência (Versionados)">
             <div class="space-y-3">
                 <p class="text-xs das-text-muted">
                     Dados completos com 11 campos — usados como fallback quando o scraping falha ou retorna dados incompletos.

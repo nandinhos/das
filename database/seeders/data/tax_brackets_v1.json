@@ -1,0 +1,80 @@
+[
+    {
+        "faixa": 1,
+        "min_rbt12": 0,
+        "max_rbt12": 180000,
+        "aliquota_nominal": 6,
+        "deducao": 0,
+        "irpj": 4,
+        "csll": 3.5,
+        "cofins": 12.82,
+        "pis": 2.78,
+        "cpp": 43.4,
+        "iss": 33.5
+    },
+    {
+        "faixa": 2,
+        "min_rbt12": 180000.01,
+        "max_rbt12": 360000,
+        "aliquota_nominal": 11.2,
+        "deducao": 9360,
+        "irpj": 4,
+        "csll": 3.5,
+        "cofins": 14.05,
+        "pis": 3.05,
+        "cpp": 43.4,
+        "iss": 32
+    },
+    {
+        "faixa": 3,
+        "min_rbt12": 360000.01,
+        "max_rbt12": 720000,
+        "aliquota_nominal": 13.5,
+        "deducao": 17640,
+        "irpj": 4,
+        "csll": 3.5,
+        "cofins": 13.64,
+        "pis": 2.96,
+        "cpp": 43.4,
+        "iss": 32.5
+    },
+    {
+        "faixa": 4,
+        "min_rbt12": 720000.01,
+        "max_rbt12": 1800000,
+        "aliquota_nominal": 16,
+        "deducao": 35640,
+        "irpj": 4,
+        "csll": 3.5,
+        "cofins": 14.1,
+        "pis": 3.05,
+        "cpp": 43.4,
+        "iss": 31.95
+    },
+    {
+        "faixa": 5,
+        "min_rbt12": 1800000.01,
+        "max_rbt12": 3600000,
+        "aliquota_nominal": 21,
+        "deducao": 125640,
+        "irpj": 4,
+        "csll": 3.5,
+        "cofins": 14.42,
+        "pis": 3.13,
+        "cpp": 43.4,
+        "iss": 31.55
+    },
+    {
+        "faixa": 6,
+        "min_rbt12": 3600000.01,
+        "max_rbt12": 4800000,
+        "aliquota_nominal": 33,
+        "deducao": 648000,
+        "irpj": 35,
+        "csll": 15,
+        "cofins": 16.03,
+        "pis": 3.47,
+        "cpp": 30.5,
+        "iss": 0
+    }
+]

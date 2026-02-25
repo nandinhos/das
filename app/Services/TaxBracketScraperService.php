@@ -2,94 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\TaxBracketVersion;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\DomCrawler\Crawler;
 
 class TaxBracketScraperService
 {
     private const PLANALTO_URL = 'https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp123.htm';
-
-    private const OFFICIAL_BRACKETS = [
-        [
-            'faixa' => 1,
-            'min_rbt12' => 0,
-            'max_rbt12' => 180000,
-            'aliquota_nominal' => 6,
-            'deducao' => 0,
-            'irpj' => 4,
-            'csll' => 3.5,
-            'cofins' => 12.82,
-            'pis' => 2.78,
-            'cpp' => 43.4,
-            'iss' => 33.5,
-        ],
-        [
-            'faixa' => 2,
-            'min_rbt12' => 180000.01,
-            'max_rbt12' => 360000,
-            'aliquota_nominal' => 11.2,
-            'deducao' => 9360,
-            'irpj' => 4,
-            'csll' => 3.5,
-            'cofins' => 14.05,
-            'pis' => 3.05,
-            'cpp' => 43.4,
-            'iss' => 32,
-        ],
-        [
-            'faixa' => 3,
-            'min_rbt12' => 360000.01,
-            'max_rbt12' => 720000,
-            'aliquota_nominal' => 13.5,
-            'deducao' => 17640,
-            'irpj' => 4,
-            'csll' => 3.5,
-            'cofins' => 13.64,
-            'pis' => 2.96,
-            'cpp' => 43.4,
-            'iss' => 32.5,
-        ],
-        [
-            'faixa' => 4,
-            'min_rbt12' => 720000.01,
-            'max_rbt12' => 1800000,
-            'aliquota_nominal' => 16,
-            'deducao' => 35640,
-            'irpj' => 4,
-            'csll' => 3.5,
-            'cofins' => 14.1,
-            'pis' => 3.05,
-            'cpp' => 43.4,
-            'iss' => 31.95,
-        ],
-        [
-            'faixa' => 5,
-            'min_rbt12' => 1800000.01,
-            'max_rbt12' => 3600000,
-            'aliquota_nominal' => 21,
-            'deducao' => 125640,
-            'irpj' => 4,
-            'csll' => 3.5,
-            'cofins' => 14.42,
-            'pis' => 3.13,
-            'cpp' => 43.4,
-            'iss' => 31.55,
-        ],
-        [
-            'faixa' => 6,
-            'min_rbt12' => 3600000.01,
-            'max_rbt12' => 4800000,
-            'aliquota_nominal' => 33,
-            'deducao' => 648000,
-            'irpj' => 35,
-            'csll' => 15,
-            'cofins' => 16.03,
-            'pis' => 3.47,
-            'cpp' => 30.5,
-            'iss' => 0,
-        ],
-    ];
 
     public function fetchOfficialBrackets(): array
     {
@@ -112,7 +31,7 @@ class TaxBracketScraperService
                 ]);
 
                 return [
-                    'data' => $this->getOfficialBracketsFallback(),
+                    'data'   => $this->getFallbackBrackets(),
                     'source' => 'fallback',
                 ];
             }
@@ -135,16 +54,15 @@ class TaxBracketScraperService
 
             $scraped = $this->parseHtml($section);
 
-            // Se o parsing falhou (vazio) ou retornou fallback, reportar como fallback
-            if (empty($scraped) || $scraped === self::OFFICIAL_BRACKETS) {
+            if (empty($scraped)) {
                 return [
-                    'data' => $this->getOfficialBracketsFallback(),
+                    'data'   => $this->getFallbackBrackets(),
                     'source' => 'fallback',
                 ];
             }
 
             return [
-                'data' => $scraped,
+                'data'   => $scraped,
                 'source' => 'site_planalto',
             ];
         } catch (\Exception $e) {
@@ -153,10 +71,25 @@ class TaxBracketScraperService
             ]);
 
             return [
-                'data' => $this->getOfficialBracketsFallback(),
+                'data'   => $this->getFallbackBrackets(),
                 'source' => 'fallback',
             ];
         }
+    }
+
+    public function getFallbackBrackets(): array
+    {
+        // Tenta última versão salva no banco
+        $latest = TaxBracketVersion::orderByDesc('version')->first();
+        if ($latest) {
+            return $latest->payload;
+        }
+
+        // Fallback absoluto: JSON do seeder
+        return json_decode(
+            file_get_contents(database_path('seeders/data/tax_brackets_v1.json')),
+            true
+        );
     }
 
     private function parseHtml(string $html): array
@@ -201,7 +134,7 @@ class TaxBracketScraperService
                                     // Preservar apenas o primeiro registro — a segunda ocorrência
                                     // de "5ª Faixa" no HTML contém fórmulas (alíquota efetiva > 14,93%)
                                     // que sobrescrevem os valores corretos com zeros.
-                                    if ($data && !isset($reparticaoData[$data['faixa']])) {
+                                    if ($data && ! isset($reparticaoData[$data['faixa']])) {
                                         $reparticaoData[$data['faixa']] = $data;
                                     }
                                 }
@@ -229,11 +162,11 @@ class TaxBracketScraperService
         if ($faixa === 0) return null;
 
         return [
-            'faixa' => $faixa,
-            'min_rbt12' => $this->extractLimit($texts[1], $faixa),
-            'max_rbt12' => $this->extractLastValue($texts[1]),
+            'faixa'            => $faixa,
+            'min_rbt12'        => $this->extractLimit($texts[1], $faixa),
+            'max_rbt12'        => $this->extractLastValue($texts[1]),
             'aliquota_nominal' => $this->extractPercentage($texts[2]),
-            'deducao' => $this->extractValue($texts[3]),
+            'deducao'          => $this->extractValue($texts[3]),
         ];
     }
 
@@ -243,13 +176,13 @@ class TaxBracketScraperService
         if ($faixa === 0) return null;
 
         return [
-            'faixa' => $faixa,
-            'irpj' => $this->extractPercentage($texts[1]),
-            'csll' => $this->extractPercentage($texts[2]),
+            'faixa'  => $faixa,
+            'irpj'   => $this->extractPercentage($texts[1]),
+            'csll'   => $this->extractPercentage($texts[2]),
             'cofins' => $this->extractPercentage($texts[3]),
-            'pis' => $this->extractPercentage($texts[4]),
-            'cpp' => $this->extractPercentage($texts[5]),
-            'iss' => $this->extractPercentage($texts[6]),
+            'pis'    => $this->extractPercentage($texts[4]),
+            'cpp'    => $this->extractPercentage($texts[5]),
+            'iss'    => $this->extractPercentage($texts[6]),
         ];
     }
 
@@ -265,7 +198,7 @@ class TaxBracketScraperService
     {
         // Se for a primeira faixa, o mínimo é 0
         if ($faixa === 1) return 0;
-        
+
         // Para as outras faixas, o mínimo é o limite inferior da faixa anterior + 0.01
         // Mas o site costuma mostrar "De X a Y", então podemos tentar extrair o primeiro valor se houver dois
         if (preg_match_all('/[\d.,]+/', $text, $matches)) {
@@ -279,7 +212,7 @@ class TaxBracketScraperService
     private function extractLastValue(string $text): float
     {
         // Extrai o último número de um range como "De 180.000,01 a 360.000,00" → 360000.00
-        if (preg_match_all('/[\d.]+,\d{2}/', $text, $matches) && !empty($matches[0])) {
+        if (preg_match_all('/[\d.]+,\d{2}/', $text, $matches) && ! empty($matches[0])) {
             return $this->extractValue(end($matches[0]));
         }
 
@@ -305,15 +238,5 @@ class TaxBracketScraperService
         $text = str_replace(',', '.', $text);
 
         return (float) $text;
-    }
-
-    public function getOfficialBracketsFallback(): array
-    {
-        return self::OFFICIAL_BRACKETS;
-    }
-
-    public function getOfficialBrackets(): array
-    {
-        return self::OFFICIAL_BRACKETS;
     }
 }
