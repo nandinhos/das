@@ -5,8 +5,8 @@ Comportamento mestre: `.aidev/agents/orchestrator.md`
 
 # RESUMO EXECUTIVO
 Estamos no projeto `das`.
-- **Intenção Ativa**: Aguardando comando
-- **Skill em Uso**: Nenhuma
+- **Intenção Ativa**: bug_fix
+- **Skill em Uso**: learned-lesson
 - **Último Pensamento**: Nenhum registro recente.
 - **Basic Memory**: ativo
 

@@ -1,0 +1,13 @@
+{
+  "version": "4.7.0",
+  "generated_at": "2026-02-24T23:56:46-03:00",
+  "hash": "4c1d9422160e766c9940b76537dcd201551a97176c555ee7e8abe422d03c3561",
+  "project": "das",
+  "stack": "laravel",
+  "agents": ["architect", "backend", "code-reviewer", "devops", "frontend-responsivo", "frontend", "legacy-analyzer", "orchestrator", "qa", "security-guardian", "state-manager"],
+  "agent_roles": {"architect": "System design, architecture decisions, and high-level planning. O Architect e o visionario tecnico que transforma requisitos em arquiteturas solidas e escalaveis.", "backend": "Server-side implementation following TDD. O Backend Developer e o construtor que transforma designs em codigo robusto, testavel e escalavel.", "code-reviewer": "Comprehensive code review focusing on quality, maintainability, patterns, and best practices.", "devops": "Infrastructure, deployment, and operational excellence. O DevOps Agent garante que o codigo chegue a producao de forma segura, escalavel e observavel.", "frontend-responsivo": "Engenheiro especialista em responsividade e estrutura CSS hibrida. Ajusta o layout para funcionar corretamente em Desktop (>= 1024px), Tablet (~768px) e Mobile (<= 768px) sem alterar a estetica existe", "frontend": "Client-side implementation with TDD where applicable. O Frontend Developer cria interfaces intuitivas, acessiveis e performaticas.", "legacy-analyzer": "Specialized in analyzing and refactoring legacy codebases.", "orchestrator": "Meta-agente inteligente que coordena o desenvolvimento com autonomia, rastreabilidade e seguranca. Funciona como o cerebro do AI Dev Superpowers, garantindo continuidade entre sessoes e qualidade em t", "qa": "Quality assurance through testing and validation.", "security-guardian": "Validates all changes for security implications.", "state-manager": "Agente especializado em garantir a integridade, sincronia e persistencia do estado do projeto. E o guardiao do Checkpoint Zero, garantindo que a troca de contexto ou de modelo de IA ocorra sem perda d"},
+  "skills": ["brainstorming", "code-review", "learned-lesson", "meta-planning", "release-management", "systematic-debugging", "test-driven-development", "writing-plans"],
+  "rules": ["generic", "livewire", "llm-limits"],
+  "agents_count": 11,
+  "skills_count": 8
+}

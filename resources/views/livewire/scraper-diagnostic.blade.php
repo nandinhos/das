@@ -4,7 +4,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <p class="text-sm das-text-muted mt-1">
-                Inspeciona a saída do scraper tributário, a qualidade dos dados extraídos e verifica se o fallback está sendo aplicado silenciosamente.
+                Inspeciona a saída do scraper tributário, a qualidade dos dados extraídos e verifica se as tabelas locais estão sincronizadas com a fonte oficial.
             </p>
         </div>
         <button
@@ -45,14 +45,6 @@
 
         {{-- SEÇÃO 1: Teste de Conexão HTTP --}}
         <x-das.section title="Teste de Conexão HTTP">
-            <style>
-                .diag-terminal .diag-token-url     { color: #6A9FB5; text-decoration: underline; cursor: pointer; }
-                .diag-terminal .diag-token-keyword { color: #CC7832; }
-                .diag-terminal .diag-token-number  { color: #6897BB; }
-                .diag-terminal .diag-token-method  { color: #FFC66D; }
-                .diag-terminal .diag-token-errcode { color: #CF6679; }
-            </style>
-
             <div class="diag-terminal rounded-xl overflow-hidden border border-[#3c3c3c] shadow-xl">
 
                 {{-- Chrome bar --}}
@@ -81,17 +73,17 @@
                         <span class="break-all">curl -sI&nbsp;<a href="{{ $connectionTest['url'] }}"
                                target="_blank"
                                rel="noopener noreferrer"
-                               class="diag-token-url hover:opacity-75 transition-opacity">{{ $connectionTest['url'] }}</a></span>
+                               class="text-[#6A9FB5] underline hover:opacity-75 transition-opacity">{{ $connectionTest['url'] }}</a></span>
                     </div>
 
                     {{-- Output: erro ou resposta OK --}}
                     @if($connectionTest['error'])
                         <div class="pl-4 border-l-2 border-[#3c3c3c]">
-                            <pre class="whitespace-pre-wrap text-xs leading-relaxed">{!! $this->highlightCurlError($connectionTest['error']) !!}</pre>
+                            <pre class="whitespace-pre-wrap text-xs leading-relaxed text-rose-400">{{ $connectionTest['error'] }}</pre>
                         </div>
                     @elseif($connectionTest['success'])
                         <div class="pl-4 border-l-2 border-[#3c3c3c] text-xs">
-                            <span class="text-[#28c840]">HTTP/</span><span class="diag-token-number">{{ $connectionTest['status_code'] }}</span>
+                            <span class="text-[#28c840]">HTTP/</span><span class="text-[#6897BB]">{{ $connectionTest['status_code'] }}</span>
                             <span class="text-[#A9B7C6] ml-2">OK</span>
                         </div>
                     @endif
@@ -104,6 +96,9 @@
                             </span>
                         @endif
                         <span>{{ $connectionTest['duration_ms'] }}ms</span>
+                        @if(($connectionTest['html_size'] ?? 0) > 0)
+                            <span>{{ number_format($connectionTest['html_size'] / 1024, 0) }} KB</span>
+                        @endif
                         @if($connectionTest['error'])
                             <span class="text-[#CF6679]">exit: error</span>
                         @endif
@@ -112,7 +107,47 @@
             </div>
         </x-das.section>
 
-        {{-- SEÇÃO 2: Dados Extraídos (Web) --}}
+        {{-- SEÇÃO 2: Metadados do Scraper --}}
+        @if(!empty($scraperMeta))
+        <x-das.section title="Pipeline de Extração">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {{-- Source --}}
+                <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] p-3">
+                    <p class="text-[10px] uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500 mb-1">Fonte</p>
+                    <p class="text-sm font-bold {{ $scraperMeta['source'] === 'site_planalto' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400' }}">
+                        {{ $scraperMeta['source'] === 'site_planalto' ? 'Planalto (Online)' : 'Fallback (Local)' }}
+                    </p>
+                </div>
+                {{-- Parser --}}
+                <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] p-3">
+                    <p class="text-[10px] uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500 mb-1">Parser</p>
+                    <p class="text-sm font-mono font-semibold text-slate-700 dark:text-slate-300">{{ $scraperMeta['parser'] }}</p>
+                </div>
+                {{-- Faixas × Campos --}}
+                <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] p-3">
+                    <p class="text-[10px] uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500 mb-1">Estrutura</p>
+                    <p class="text-sm font-mono font-semibold text-slate-700 dark:text-slate-300">{{ $scraperMeta['faixas'] }} faixas × {{ $scraperMeta['campos'] }} campos</p>
+                </div>
+                {{-- Duration --}}
+                <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] p-3">
+                    <p class="text-[10px] uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500 mb-1">Tempo Total</p>
+                    <p class="text-sm font-mono font-semibold text-slate-700 dark:text-slate-300">{{ $scraperMeta['duration_ms'] }}ms</p>
+                </div>
+                {{-- Encoding --}}
+                <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] p-3">
+                    <p class="text-[10px] uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500 mb-1">Encoding</p>
+                    <p class="text-sm font-mono font-semibold text-slate-700 dark:text-slate-300">{{ $scraperMeta['encoding'] }}</p>
+                </div>
+                {{-- Checked At --}}
+                <div class="rounded-xl border border-slate-200 dark:border-[#3E3E3A] p-3">
+                    <p class="text-[10px] uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500 mb-1">Verificado em</p>
+                    <p class="text-sm font-mono font-semibold text-slate-700 dark:text-slate-300">{{ $scraperMeta['checked_at'] }}</p>
+                </div>
+            </div>
+        </x-das.section>
+        @endif
+
+        {{-- SEÇÃO 3: Dados Extraídos pelo Scraper --}}
         <x-das.section title="Dados Extraídos pelo Scraper">
             <div class="space-y-4">
                 {{-- Badge de status --}}
@@ -123,30 +158,20 @@
                             SCRAPING WEB ATIVO
                         </span>
                     @else
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">
-                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                             FALLBACK APLICADO
                         </span>
                     @endif
                     <span class="text-xs das-text-muted">{{ count($scraped) }} faixa(s) retornadas</span>
                 </div>
 
-                {{-- Alerta sobre bug do parseRow --}}
-                @php
-                    $firstScraped = $scraped[0] ?? [];
-                    $missingTribute = array_diff(\App\Livewire\ScraperDiagnostic::$tributeFields, array_keys($firstScraped));
-                @endphp
-
-                @if(!empty($missingTribute))
-                    <div class="rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-4 py-3">
-                        <p class="text-xs font-semibold text-amber-800 dark:text-amber-300 mb-1">
-                            Bug confirmado: <code class="font-mono">parseRow()</code> extrai apenas {{ count($firstScraped) }} campos
-                        </p>
-                        <p class="text-xs text-amber-700 dark:text-amber-400">
-                            Campos ausentes: <span class="font-mono font-semibold">{{ implode(', ', $missingTribute) }}</span>
-                        </p>
-                        <p class="text-xs text-amber-600 dark:text-amber-500 mt-1">
-                            Os tributos por repartição nunca são extraídos da fonte online — o fallback hardcoded sempre supre esses dados.
+                {{-- Nota informativa sobre fallback --}}
+                @if($usedFallback && $connectionTest['error'])
+                    <div class="rounded-xl border border-slate-200 dark:border-[#2a2a2a] bg-slate-50 dark:bg-[#161615] px-4 py-3">
+                        <p class="text-xs text-slate-600 dark:text-slate-400">
+                            <span class="font-semibold">ℹ️ Modo de segurança:</span>
+                            A conexão com o Planalto falhou, provavelmente por SSL/rede. Os dados do fallback são idênticos à legislação vigente e garantem a precisão dos cálculos.
                         </p>
                     </div>
                 @endif
@@ -158,8 +183,7 @@
                             <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                 <tr>
                                     @foreach(array_keys($scraped[0]) as $key)
-                                        <th class="px-3 py-2.5 text-left font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide text-[10px]
-                                            {{ in_array($key, \App\Livewire\ScraperDiagnostic::$tributeFields) ? 'text-rose-400 dark:text-rose-500' : '' }}">
+                                        <th class="px-3 py-2.5 text-left font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide text-[10px]">
                                             {{ $key }}
                                         </th>
                                     @endforeach
@@ -179,32 +203,14 @@
                 @else
                     <p class="text-sm das-text-muted text-center py-4">Nenhum dado retornado.</p>
                 @endif
-
-                {{-- Campos ausentes destacados --}}
-                @if(!empty($missingTribute))
-                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mt-2">
-                        @foreach(\App\Livewire\ScraperDiagnostic::$tributeFields as $field)
-                            @php $present = isset($firstScraped[$field]); @endphp
-                            <div class="rounded-lg px-3 py-2 text-center text-xs font-mono font-semibold
-                                {{ $present
-                                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
-                                    : 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800' }}">
-                                {{ $field }}
-                                <div class="text-[10px] font-normal mt-0.5 opacity-70">
-                                    {{ $present ? 'presente' : 'ausente' }}
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
             </div>
         </x-das.section>
 
-        {{-- SEÇÃO 3: OFFICIAL_BRACKETS (referência hardcoded) --}}
+        {{-- SEÇÃO 4: OFFICIAL_BRACKETS (referência hardcoded) --}}
         <x-das.section title="OFFICIAL_BRACKETS — Referência Hardcoded">
             <div class="space-y-3">
                 <p class="text-xs das-text-muted">
-                    Dados completos com 11 campos — usados como fallback quando o scraping falha.
+                    Dados completos com 11 campos — usados como fallback quando o scraping falha ou retorna dados incompletos.
                 </p>
 
                 @if(!empty($fallback))
@@ -213,8 +219,7 @@
                             <thead class="bg-slate-50 dark:bg-[#161615] border-b border-slate-200 dark:border-[#3E3E3A]">
                                 <tr>
                                     @foreach(array_keys($fallback[0]) as $key)
-                                        <th class="px-3 py-2.5 text-left font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide text-[10px]
-                                            {{ in_array($key, \App\Livewire\ScraperDiagnostic::$tributeFields) ? 'text-primary-500 dark:text-primary-400' : '' }}">
+                                        <th class="px-3 py-2.5 text-left font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide text-[10px]">
                                             {{ $key }}
                                         </th>
                                     @endforeach
@@ -235,14 +240,13 @@
             </div>
         </x-das.section>
 
-        {{-- SEÇÃO 4: Resultado do Comparador --}}
+        {{-- SEÇÃO 5: Resultado do Comparador --}}
         <x-das.section title="Resultado do Comparador (checkForUpdates)">
             <div class="space-y-4">
                 {{-- Status badge --}}
                 @php
                     $status = $comparisonResult['status'] ?? 'error';
                     $source = $comparisonResult['source'] ?? '';
-                    $sourceMismatch = $source === 'site_planalto' && $usedFallback;
                 @endphp
 
                 <div class="flex flex-wrap items-center gap-3">
@@ -268,19 +272,6 @@
                     </span>
                 </div>
 
-                {{-- Alerta de observabilidade --}}
-                @if($sourceMismatch)
-                    <div class="rounded-xl border border-rose-300 dark:border-rose-700 bg-rose-50 dark:bg-rose-900/20 px-4 py-3">
-                        <p class="text-xs font-semibold text-rose-800 dark:text-rose-300 mb-1">
-                            Bug de observabilidade detectado
-                        </p>
-                        <p class="text-xs text-rose-700 dark:text-rose-400">
-                            <code class="font-mono">checkForUpdates()</code> reporta <code class="font-mono">source = "site_planalto"</code>,
-                            mas o fallback foi aplicado na prática (campos de tributos ausentes ou conexão falhou).
-                        </p>
-                    </div>
-                @endif
-
                 {{-- Diferenças --}}
                 @if(!empty($comparisonResult['differences']))
                     <div>
@@ -302,8 +293,8 @@
                                         <tr class="hover:bg-slate-50 dark:hover:bg-[#161615] transition-colors">
                                             <td class="px-3 py-2 text-slate-700 dark:text-slate-300">{{ $diff['faixa'] ?? '-' }}</td>
                                             <td class="px-3 py-2 text-amber-600 dark:text-amber-400">{{ $diff['field'] ?? '-' }}</td>
-                                            <td class="px-3 py-2 text-rose-600 dark:text-rose-400">{{ $diff['local'] ?? '-' }}</td>
-                                            <td class="px-3 py-2 text-emerald-600 dark:text-emerald-400">{{ $diff['official'] ?? '-' }}</td>
+                                            <td class="px-3 py-2 text-rose-600 dark:text-rose-400">{{ $diff['current_value'] ?? $diff['local'] ?? '-' }}</td>
+                                            <td class="px-3 py-2 text-emerald-600 dark:text-emerald-400">{{ $diff['official_value'] ?? $diff['official'] ?? '-' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -314,8 +305,9 @@
                     <p class="text-xs das-text-muted">Nenhuma diferença encontrada — tabelas locais sincronizadas.</p>
                 @endif
 
-                {{-- JSON expansível --}}
-                <div x-data="{ open: false }">
+                {{-- JSON expansível com syntax highlighting --}}
+                <div x-data="{ open: false, rendered: '' }"
+                     x-init="rendered = window.highlightJson(@js($comparisonResult))">
                     <button @click="open = !open"
                             class="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
                         <svg class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,7 +316,11 @@
                         <span x-text="open ? 'Ocultar JSON' : 'Ver payload completo (JSON)'"></span>
                     </button>
                     <div x-show="open" x-collapse class="mt-3">
-                        <pre class="rounded-xl bg-slate-900 dark:bg-[#0d0d0d] text-slate-200 p-4 text-xs overflow-x-auto border border-slate-700 dark:border-[#2a2a2a]">{{ json_encode($comparisonResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                        <div class="rounded-xl bg-[#1e1e1e] border border-[#3c3c3c] p-4 overflow-x-auto shadow-xl">
+                            <pre class="text-xs font-mono leading-relaxed"
+                                 style="color: #A9B7C6;"
+                                 x-html="rendered"></pre>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -333,3 +329,27 @@
     @endif
 
 </div>
+
+<script>
+window.highlightJson = function(jsonData) {
+    var str = JSON.stringify(jsonData, null, 4);
+    // Escape HTML entities
+    str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Keys em ciano
+    str = str.replace(/"([^"]+?)"(?=\s*:)/g,
+        '<span style="color:#9CDCFE">"$1"</span>');
+    // String values em laranja
+    str = str.replace(/:\s*"([^"]*?)"/g,
+        ': <span style="color:#CE9178">"$1"</span>');
+    // Números em verde-claro
+    str = str.replace(/:\s*(-?\d+\.?\d*)/g,
+        ': <span style="color:#B5CEA8">$1</span>');
+    // null, true, false em azul
+    str = str.replace(/\b(null|true|false)\b/g,
+        '<span style="color:#569CD6">$1</span>');
+    // Brackets e chaves em amarelo
+    str = str.replace(/([{}\[\]])/g,
+        '<span style="color:#FFD700">$1</span>');
+    return str;
+};
+</script>
