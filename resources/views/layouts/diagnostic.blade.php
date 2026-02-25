@@ -43,10 +43,10 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-base font-semibold font-heading text-slate-900 dark:text-white leading-tight">
+                        <h1 class="text-sm sm:text-base font-semibold font-heading text-slate-900 dark:text-white leading-tight">
                             Diagnóstico do Scraper
                         </h1>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Tabelas Tributárias — Anexo III</p>
+                        <p class="hidden sm:block text-xs text-slate-500 dark:text-slate-400">Tabelas Tributárias — Anexo III</p>
                     </div>
                 </div>
 
