@@ -6,7 +6,9 @@
 
 ## 🎯 Ideias em Backlog
 
-*Nenhum item pendente no momento.*
+| # | Arquivo | Descrição | Prioridade | Bloqueante |
+|---|---------|-----------|------------|------------|
+| 1 | [upgrade-agent-responsivo-table-patterns.md](upgrade-agent-responsivo-table-patterns.md) | Upgrade do agente frontend-responsivo com padrões de tabelas em modais | Média | Context7 + Laravel Boost |
 
 ---
 
@@ -24,9 +26,10 @@ Quando uma ideia for priorizada:
 
 ## 📊 Estatísticas
 
-- **Total de ideias:** 0
+- **Total de ideias:** 1
 - **Prontas para priorização:** 0
 - **Em análise:** 0
+- **Bloqueadas por validação externa:** 1
 
 ---
 

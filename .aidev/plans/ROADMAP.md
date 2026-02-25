@@ -50,12 +50,15 @@ Este documento serve como **fonte única de verdade** para implementação de fu
 - ✅ Tabela Repartição (7 cols): card layout mobile com grid 2×3 por faixa
 - ✅ Inputs mobile sem `absolute` positioning (`inline`, `w-full`, `inputmode=decimal`)
 - ✅ Modal de verificação responsivo (`flex-col-reverse`, `overflow-x-auto`, border-radius toque)
+- ✅ Tabelas dos modais de correção: `min-w-max` para scroll horizontal sem truncamento de colunas
 
 ---
 
 ## 📋 BACKLOG (Ideias Priorizáveis)
 
-*Sem itens no momento. Adicione ideias ao backlog para priorização.*
+| # | Item | Prioridade | Bloqueante |
+|---|------|------------|------------|
+| 1 | [Upgrade agente frontend-responsivo — padrões de tabelas em modais](backlog/upgrade-agent-responsivo-table-patterns.md) | Média | Context7 + Laravel Boost |
 
 ---
 
