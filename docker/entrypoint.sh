@@ -11,11 +11,19 @@ mkdir -p "${APP_DIR}/storage/framework/sessions" \
     "${APP_DIR}/storage/app" \
     "${APP_DIR}/bootstrap/cache"
 
-# Corrige DB_DATABASE no .env (força caminho correto)
-if grep -q "DB_DATABASE=" "${APP_DIR}/.env" 2>/dev/null; then
-    sed -i 's|DB_DATABASE=.*|DB_DATABASE=/var/www/html/storage/app/database.sqlite|' "${APP_DIR}/.env"
-else
-    echo 'DB_DATABASE=/var/www/html/storage/app/database.sqlite' >> "${APP_DIR}/.env"
+# Não sobrescreve DB_DATABASE (usa o caminho que já está no .env)
+# Apenas garante que o arquivo exista no caminho configurado
+if [ -n "${DB_DATABASE:-}" ] && [ ! -f "${DB_DATABASE}" ]; then
+    mkdir -p "$(dirname "${DB_DATABASE}")"
+    touch "${DB_DATABASE}"
+    chown www-data:www-data "${DB_DATABASE}"
+    chmod 664 "${DB_DATABASE}"
+elif [ ! -f "${APP_DIR}/storage/app/database.sqlite" ]; then
+    # Fallback para o caminho padrão se não existir
+    mkdir -p "${APP_DIR}/storage/app"
+    touch "${APP_DIR}/storage/app/database.sqlite"
+    chown www-data:www-data "${APP_DIR}/storage/app/database.sqlite"
+    chmod 664 "${APP_DIR}/storage/app/database.sqlite"
 fi
 
 # Força SESSION_DRIVER=cookie (mais confiável que file)
