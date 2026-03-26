@@ -20,6 +20,10 @@
 /public/storage
 /storage/*.key
 /storage/pail
+
+# SQLite database files
+/database/*.sqlite
+*.sqlite
 /vendor
 Homestead.json
 Homestead.yaml
