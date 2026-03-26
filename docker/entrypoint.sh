@@ -13,46 +13,37 @@ mkdir -p "${APP_DIR}/storage/framework/sessions" \
 
 # DETECTA E USA O BANCO CONFIGURADO NO .env
 echo "[entrypoint] Detectando banco de dados..."
+DB_CONNECTION=$(grep "^DB_CONNECTION=" "${APP_DIR}/.env" | cut -d= -f2)
 DB_PATH=$(grep "^DB_DATABASE=" "${APP_DIR}/.env" | cut -d= -f2)
 
-if [ -z "$DB_PATH" ]; then
-    echo "[entrypoint] DB_DATABASE não encontrado no .env, usando padrão"
-    DB_PATH="${APP_DIR}/storage/app/database.sqlite"
-    # Adiciona ao .env se não existir
-    echo "DB_DATABASE=${DB_PATH}" >> "${APP_DIR}/.env"
-fi
+if [ "$DB_CONNECTION" = "sqlite" ]; then
+    if [ -z "$DB_PATH" ]; then
+        echo "[entrypoint] DB_DATABASE não encontrado no .env para sqlite, usando padrão"
+        DB_PATH="${APP_DIR}/database/database.sqlite"
+        echo "DB_DATABASE=${DB_PATH}" >> "${APP_DIR}/.env"
+    fi
+    echo "[entrypoint] Usando banco SQLite: ${DB_PATH}"
 
-echo "[entrypoint] Usando banco: ${DB_PATH}"
+    # GARANTE QUE O BANDO EXISTE NO CAMINHO CORRETO
+    DB_DIR=$(dirname "${DB_PATH}")
+    if [ ! -d "${DB_DIR}" ]; then
+        echo "[entrypoint] Criando diretório do banco: ${DB_DIR}"
+        mkdir -p "${DB_DIR}"
+        chown www-data:www-data "${DB_DIR}" 2>/dev/null || true
+    fi
 
-# Força SESSION_DRIVER=cookie (mais confiável que file)
-if grep -q "SESSION_DRIVER=" "${APP_DIR}/.env" 2>/dev/null; then
-    sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=cookie/' "${APP_DIR}/.env"
+    if [ ! -f "${DB_PATH}" ]; then
+        echo "[entrypoint] Criando banco de dados: ${DB_PATH}"
+        touch "${DB_PATH}"
+    fi
+
+    # Ajusta permissões no banco
+    chown www-data:www-data "${DB_PATH}" 2>/dev/null || \
+        chown "$(id -u):$(id -g)" "${DB_PATH}" 2>/dev/null || true
+    chmod 664 "${DB_PATH}" 2>/dev/null || true
 else
-    echo 'SESSION_DRIVER=cookie' >> "${APP_DIR}/.env"
+    echo "[entrypoint] Usando conexão de rede: ${DB_CONNECTION}"
 fi
-
-# Gera APP_KEY se não existir ou estiver vazio
-if ! grep -q "APP_KEY=base64:" "${APP_DIR}/.env" 2>/dev/null; then
-    echo "[entrypoint] Gerando APP_KEY..."
-    php "${APP_DIR}/artisan" key:generate --force
-fi
-
-# GARANTE QUE O BANDO EXISTE NO CAMINHO CORRETO
-DB_DIR=$(dirname "${DB_PATH}")
-if [ ! -d "${DB_DIR}" ]; then
-    echo "[entrypoint] Criando diretório do banco: ${DB_DIR}"
-    mkdir -p "${DB_DIR}"
-fi
-
-if [ ! -f "${DB_PATH}" ]; then
-    echo "[entrypoint] Criando banco de dados: ${DB_PATH}"
-    touch "${DB_PATH}"
-fi
-
-# Ajusta permissões no banco
-chown www-data:www-data "${DB_PATH}" 2>/dev/null || \
-    chown "$(id -u):$(id -g)" "${DB_PATH}" 2>/dev/null || true
-chmod 664 "${DB_PATH}" 2>/dev/null || true
 
 # Ajusta permissões no storage (apenas o necessário para cache/logs)
 chown -R www-data:www-data "${APP_DIR}/storage/logs" "${APP_DIR}/storage/framework" 2>/dev/null || \
