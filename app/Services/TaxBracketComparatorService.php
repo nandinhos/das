@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\TaxBracket;
+use App\Models\TaxBracketVersion;
 use Illuminate\Support\Collection;
 
 class TaxBracketComparatorService
@@ -37,23 +38,28 @@ class TaxBracketComparatorService
 
         if (empty($officialBrackets)) {
             return [
-                'status'      => 'error',
-                'checked_at'  => now()->toIso8601String(),
-                'source'      => $source,
-                'message'     => 'Failed to fetch official brackets or empty data',
+                'status' => 'error',
+                'checked_at' => now()->toIso8601String(),
+                'source' => $source,
+                'message' => 'Failed to fetch official brackets or empty data',
                 'differences' => [],
             ];
         }
 
+        // Se a fonte NÃO é fallback, salva como nova versão oficial
+        if (strpos($source, 'fallback') === false && strpos($source, 'cache') === false) {
+            $this->saveOfficialVersion($officialBrackets, $source);
+        }
+
         // Comparação rápida por checksum — evita comparação campo a campo se já sincronizado
-        $localChecksum    = static::computeChecksum($localBrackets->toArray());
+        $localChecksum = static::computeChecksum($localBrackets->toArray());
         $officialChecksum = static::computeChecksum($officialBrackets);
 
         if ($localChecksum === $officialChecksum) {
             return [
-                'status'      => 'uptodate',
-                'checked_at'  => now()->toIso8601String(),
-                'source'      => $source,
+                'status' => 'uptodate',
+                'checked_at' => now()->toIso8601String(),
+                'source' => $source,
                 'differences' => [],
             ];
         }
@@ -61,11 +67,29 @@ class TaxBracketComparatorService
         $differences = $this->compare($localBrackets, collect($officialBrackets));
 
         return [
-            'status'      => empty($differences) ? 'uptodate' : 'outdated',
-            'checked_at'  => now()->toIso8601String(),
-            'source'      => $source,
+            'status' => empty($differences) ? 'uptodate' : 'outdated',
+            'checked_at' => now()->toIso8601String(),
+            'source' => $source,
             'differences' => $differences,
         ];
+    }
+
+    private function saveOfficialVersion(array $brackets, string $source): void
+    {
+        try {
+            $version = TaxBracketVersion::max('version') ?? 0;
+            $version++;
+
+            TaxBracketVersion::create([
+                'version' => $version,
+                'source' => $source,
+                'payload' => $brackets,
+                'checksum' => static::computeChecksum($brackets),
+                'applied_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed to save official version: '.$e->getMessage());
+        }
     }
 
     public static function computeChecksum(array $brackets): string
@@ -93,27 +117,27 @@ class TaxBracketComparatorService
 
             if (! $official) {
                 $differences[] = [
-                    'faixa'          => $local->faixa,
-                    'field'          => 'missing',
-                    'current_value'  => null,
+                    'faixa' => $local->faixa,
+                    'field' => 'missing',
+                    'current_value' => null,
                     'official_value' => null,
-                    'difference'     => 'Faixa existe localmente mas não encontrada na fonte oficial',
+                    'difference' => 'Faixa existe localmente mas não encontrada na fonte oficial',
                 ];
 
                 continue;
             }
 
             foreach (self::COMPARABLE_FIELDS as $field) {
-                $localValue    = (float) $local->$field;
+                $localValue = (float) $local->$field;
                 $officialValue = (float) $official[$field];
 
                 if (! $this->valuesAreEqual($localValue, $officialValue)) {
                     $differences[] = [
-                        'faixa'          => $local->faixa,
-                        'field'          => $field,
-                        'current_value'  => $localValue,
+                        'faixa' => $local->faixa,
+                        'field' => $field,
+                        'current_value' => $localValue,
                         'official_value' => $officialValue,
-                        'difference'     => $localValue - $officialValue,
+                        'difference' => $localValue - $officialValue,
                     ];
                 }
             }
@@ -123,11 +147,11 @@ class TaxBracketComparatorService
             $local = $localBrackets->firstWhere('faixa', $official['faixa']);
             if (! $local) {
                 $differences[] = [
-                    'faixa'          => $official['faixa'],
-                    'field'          => 'missing',
-                    'current_value'  => null,
+                    'faixa' => $official['faixa'],
+                    'field' => 'missing',
+                    'current_value' => null,
                     'official_value' => 'Nova faixa na fonte oficial',
-                    'difference'     => 'Nova faixa disponível na legislação',
+                    'difference' => 'Nova faixa disponível na legislação',
                 ];
             }
         }
