@@ -73,32 +73,48 @@ class TaxTablesManager extends Component
 
     public function confirmCorrection()
     {
-        $comparator = app(TaxBracketComparatorService::class);
-        $official = $comparator->getOfficialBrackets();
+        try {
+            $comparator = app(TaxBracketComparatorService::class);
+            $official = $comparator->getOfficialBrackets();
 
-        foreach ($official as $data) {
-            TaxBracket::where('faixa', $data['faixa'])->update([
-                'min_rbt12' => $data['min_rbt12'],
-                'max_rbt12' => $data['max_rbt12'],
-                'aliquota_nominal' => $data['aliquota_nominal'],
-                'deducao' => $data['deducao'],
-                'irpj' => $data['irpj'],
-                'csll' => $data['csll'],
-                'cofins' => $data['cofins'],
-                'pis' => $data['pis'],
-                'cpp' => $data['cpp'],
-                'iss' => $data['iss'],
+            $updated = 0;
+            foreach ($official as $data) {
+                $result = TaxBracket::where('faixa', $data['faixa'])->update([
+                    'min_rbt12' => $data['min_rbt12'],
+                    'max_rbt12' => $data['max_rbt12'],
+                    'aliquota_nominal' => $data['aliquota_nominal'],
+                    'deducao' => $data['deducao'],
+                    'irpj' => $data['irpj'],
+                    'csll' => $data['csll'],
+                    'cofins' => $data['cofins'],
+                    'pis' => $data['pis'],
+                    'cpp' => $data['cpp'],
+                    'iss' => $data['iss'],
+                ]);
+                $updated += $result;
+            }
+
+            // Recarrega os dados do banco para garantir
+            $this->brackets = TaxBracket::orderBy('faixa')->get()->toArray();
+
+            // Limpa estados do modal
+            $this->showConfirm = false;
+            $this->correctionSummary = [];
+            $this->checkResult = null;
+
+            // Dispara eventos
+            $this->dispatch('tax-brackets-updated');
+            $this->dispatch('flash-message', [
+                'type' => 'success',
+                'message' => "Tabelas atualizadas! {$updated} registro(s) modificado(s).",
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('flash-message', [
+                'type' => 'error',
+                'message' => 'Erro ao atualizar: '.$e->getMessage(),
             ]);
         }
-
-        $this->loadBrackets();
-        $this->closeModal();
-        $this->dispatch('tax-brackets-updated');
-
-        $this->dispatch('flash-message', [
-            'type' => 'success',
-            'message' => 'Tabelas atualizadas com valores oficiais!',
-        ]);
     }
 
     public function cancelConfirm()
