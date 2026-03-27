@@ -17,11 +17,11 @@ class TaxBracketScraperService
                 ->retry(2, 500)
                 ->withOptions([
                     'verify' => false,
-                    'curl'   => [CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1],
+                    'curl' => [CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1],
                 ])
                 ->withHeaders([
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-                    'Accept'     => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 ])
                 ->get(self::PLANALTO_URL);
 
@@ -31,7 +31,7 @@ class TaxBracketScraperService
                 ]);
 
                 return [
-                    'data'   => $this->getFallbackBrackets(),
+                    'data' => $this->getFallbackBrackets(),
                     'source' => 'fallback',
                 ];
             }
@@ -56,23 +56,24 @@ class TaxBracketScraperService
 
             if (empty($scraped)) {
                 return [
-                    'data'   => $this->getFallbackBrackets(),
+                    'data' => $this->getFallbackBrackets(),
                     'source' => 'fallback',
                 ];
             }
 
             return [
-                'data'   => $scraped,
+                'data' => $scraped,
                 'source' => 'site_planalto',
             ];
         } catch (\Exception $e) {
             Log::error('Error fetching tax brackets', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return [
-                'data'   => $this->getFallbackBrackets(),
-                'source' => 'fallback',
+                'data' => $this->getFallbackBrackets(),
+                'source' => 'error: '.$e->getMessage(),
             ];
         }
     }
@@ -110,7 +111,7 @@ class TaxBracketScraperService
                     if (preg_match_all('/<tr.*?>(.*?)<\/tr>/si', $tableHtml, $rows)) {
                         foreach ($rows[1] as $rowContent) {
                             if (preg_match_all('/<td.*?>(.*?)<\/td>/si', $rowContent, $cells)) {
-                                $cellTexts = array_map(fn($c) => trim(strip_tags($c)), $cells[1]);
+                                $cellTexts = array_map(fn ($c) => trim(strip_tags($c)), $cells[1]);
                                 if (count($cellTexts) >= 4 && preg_match('/^\d/u', $cellTexts[0])) {
                                     $data = $this->parseBaseRow($cellTexts);
                                     if ($data) {
@@ -128,7 +129,7 @@ class TaxBracketScraperService
                     if (preg_match_all('/<tr.*?>(.*?)<\/tr>/si', $tableHtml, $rows)) {
                         foreach ($rows[1] as $rowContent) {
                             if (preg_match_all('/<td.*?>(.*?)<\/td>/si', $rowContent, $cells)) {
-                                $cellTexts = array_map(fn($c) => trim(strip_tags($c)), $cells[1]);
+                                $cellTexts = array_map(fn ($c) => trim(strip_tags($c)), $cells[1]);
                                 if (count($cellTexts) >= 7 && preg_match('/^\d/u', $cellTexts[0])) {
                                     $data = $this->parseReparticaoRow($cellTexts);
                                     // Preservar apenas o primeiro registro — a segunda ocorrência
@@ -159,30 +160,34 @@ class TaxBracketScraperService
     private function parseBaseRow(array $texts): ?array
     {
         $faixa = $this->extractFaixa($texts[0]);
-        if ($faixa === 0) return null;
+        if ($faixa === 0) {
+            return null;
+        }
 
         return [
-            'faixa'            => $faixa,
-            'min_rbt12'        => $this->extractLimit($texts[1], $faixa),
-            'max_rbt12'        => $this->extractLastValue($texts[1]),
+            'faixa' => $faixa,
+            'min_rbt12' => $this->extractLimit($texts[1], $faixa),
+            'max_rbt12' => $this->extractLastValue($texts[1]),
             'aliquota_nominal' => $this->extractPercentage($texts[2]),
-            'deducao'          => $this->extractValue($texts[3]),
+            'deducao' => $this->extractValue($texts[3]),
         ];
     }
 
     private function parseReparticaoRow(array $texts): ?array
     {
         $faixa = $this->extractFaixa($texts[0]);
-        if ($faixa === 0) return null;
+        if ($faixa === 0) {
+            return null;
+        }
 
         return [
-            'faixa'  => $faixa,
-            'irpj'   => $this->extractPercentage($texts[1]),
-            'csll'   => $this->extractPercentage($texts[2]),
+            'faixa' => $faixa,
+            'irpj' => $this->extractPercentage($texts[1]),
+            'csll' => $this->extractPercentage($texts[2]),
             'cofins' => $this->extractPercentage($texts[3]),
-            'pis'    => $this->extractPercentage($texts[4]),
-            'cpp'    => $this->extractPercentage($texts[5]),
-            'iss'    => $this->extractPercentage($texts[6]),
+            'pis' => $this->extractPercentage($texts[4]),
+            'cpp' => $this->extractPercentage($texts[5]),
+            'iss' => $this->extractPercentage($texts[6]),
         ];
     }
 
@@ -191,13 +196,16 @@ class TaxBracketScraperService
         if (preg_match('/(\d+)/', $text, $matches)) {
             return (int) $matches[1];
         }
+
         return 0;
     }
 
     private function extractLimit(string $text, int $faixa): float
     {
         // Se for a primeira faixa, o mínimo é 0
-        if ($faixa === 1) return 0;
+        if ($faixa === 1) {
+            return 0;
+        }
 
         // Para as outras faixas, o mínimo é o limite inferior da faixa anterior + 0.01
         // Mas o site costuma mostrar "De X a Y", então podemos tentar extrair o primeiro valor se houver dois
@@ -206,6 +214,7 @@ class TaxBracketScraperService
                 return $this->extractValue($matches[0][0]);
             }
         }
+
         return 0; // Fallback simples
     }
 
