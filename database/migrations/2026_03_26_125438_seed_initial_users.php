@@ -11,23 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Usuário 1: Nando Dev
-        User::firstOrCreate(
-            ['email' => 'nandinhos@gmail.com'],
-            [
-                'name' => 'Nando Dev',
-                'password' => Hash::make('REDACTED'),
-            ]
-        );
+        // Senhas vêm do ambiente (ADMIN_*_PASSWORD) — nunca hardcoded no código.
+        // Sem valor configurado, o usuário não é criado pela migração (fail loud).
+        $nandoPassword = env('ADMIN_NANDO_PASSWORD');
+        if ($nandoPassword) {
+            // Usuário 1: Nando Dev
+            User::firstOrCreate(
+                ['email' => 'nandinhos@gmail.com'],
+                [
+                    'name' => 'Nando Dev',
+                    'password' => Hash::make($nandoPassword),
+                ]
+            );
+        }
 
-        // Usuário 2: Angelica Domingos
-        User::firstOrCreate(
-            ['email' => 'angelica.domingos@hotmail.com'],
-            [
-                'name' => 'Angelica Domingos',
-                'password' => Hash::make('REDACTED'),
-            ]
-        );
+        $angelicaPassword = env('ADMIN_ANGELICA_PASSWORD');
+        if ($angelicaPassword) {
+            // Usuário 2: Angelica Domingos
+            User::firstOrCreate(
+                ['email' => 'angelica.domingos@hotmail.com'],
+                [
+                    'name' => 'Angelica Domingos',
+                    'password' => Hash::make($angelicaPassword),
+                ]
+            );
+        }
     }
 
     /**

@@ -15,19 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Usuário 1: Nando Dev
-        User::factory()->create([
-            'name' => 'Nando Dev',
-            'email' => 'nandinhos@gmail.com',
-            'password' => bcrypt('REDACTED'),
-        ]);
+        // Senhas vêm do ambiente (ADMIN_*_PASSWORD) — nunca hardcoded no código.
+        $nandoPassword = env('ADMIN_NANDO_PASSWORD');
+        if ($nandoPassword) {
+            // Usuário 1: Nando Dev
+            User::factory()->create([
+                'name' => 'Nando Dev',
+                'email' => 'nandinhos@gmail.com',
+                'password' => bcrypt($nandoPassword),
+            ]);
+        }
 
-        // Usuário 2: Angelica Domingos
-        User::factory()->create([
-            'name' => 'Angelica Domingos',
-            'email' => 'angelica.domingos@hotmail.com',
-            'password' => bcrypt('REDACTED'),
-        ]);
+        $angelicaPassword = env('ADMIN_ANGELICA_PASSWORD');
+        if ($angelicaPassword) {
+            // Usuário 2: Angelica Domingos
+            User::factory()->create([
+                'name' => 'Angelica Domingos',
+                'email' => 'angelica.domingos@hotmail.com',
+                'password' => bcrypt($angelicaPassword),
+            ]);
+        }
 
         $this->call([
             TaxBracketSeeder::class,
