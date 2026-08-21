@@ -18,8 +18,8 @@ O projeto está pronto para deploy automático no cPanel com:
 
 ### ✅ Dados Iniciais
 - **2 usuários criados automaticamente**:
-  - Nando Dev (nandinhos@gmail.com) / REDACTED
-  - Angelica Domingos (angelica.domingos@hotmail.com) / REDACTED
+  - Nando Dev (nandinhos@gmail.com) / REDACTED (definida via env ADMIN_NANDO_PASSWORD)
+  - Angelica Domingos (angelica.domingos@hotmail.com) / REDACTED (definida via env ADMIN_ANGELICA_PASSWORD)
 - **6 faixas tributárias populadas** (Anexo III Simples Nacional)
 
 ### ✅ Migrações
@@ -55,7 +55,7 @@ Acesse o site e teste:
 ```
 URL: https://das.fssdev.com.br/login
 Usuário: nandinhos@gmail.com
-Senha: REDACTED
+Senha: REDACTED (definida via env ADMIN_NANDO_PASSWORD)
 ```
 
 ### 2. Verificar Dados (via tinker)
